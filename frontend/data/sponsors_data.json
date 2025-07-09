@@ -1,0 +1,13 @@
+{
+  "data": [
+    {
+      "image": "./assets/sponsors_logo/dau.png",
+      "link": "https://www.daiict.ac.in/"
+    },
+
+    {
+      "image": "./assets/sponsors_logo/ismmacs.png",
+      "link": "https://ismmacs.org.in/index.html"
+    }
+  ]
+}
