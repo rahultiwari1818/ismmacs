@@ -246,65 +246,72 @@ $(document).ready(function () {
 
   //   --------------------------------------- Registration Notes Data fetch ------------------------------------------------------------
 
-$.getJSON("./data/registration_fees_and_notes.json", function (data) {
-  function renderDetailedFeeTable(targetId, feeData) {
-    let html = "";
+  $.getJSON("./data/registration_fees_and_notes.json", function (data) {
+    function renderDetailedFeeTable(targetId, feeData) {
+      let html = "";
 
-    Object.keys(feeData).forEach((nationality) => {
-      html += `<h5 class="mt-4">${nationality}</h5>`;
+      Object.keys(feeData).forEach((nationality) => {
+        html += `<h5 class="mt-4">${nationality}</h5>`;
 
-      const membershipGroups = feeData[nationality];
+        const membershipGroups = feeData[nationality];
 
-      // Check if nested membership exists
-      const hasMembershipGroups = typeof membershipGroups === "object" && !Array.isArray(membershipGroups) && Object.values(membershipGroups)[0] instanceof Object;
+        // Check if nested membership exists
+        const hasMembershipGroups =
+          typeof membershipGroups === "object" &&
+          !Array.isArray(membershipGroups) &&
+          Object.values(membershipGroups)[0] instanceof Object;
 
-      if (hasMembershipGroups && Object.keys(membershipGroups)[0] !== "Students (UG/ PG/ Research Scholars)") {
-        Object.keys(membershipGroups).forEach((membershipType) => {
-          html += `<h6 class="mt-2">${membershipType}</h6>`;
-          html += `<table class="custom-table"><thead><tr><th>Category</th><th>Fee</th></tr></thead><tbody>`;
+        if (
+          hasMembershipGroups &&
+          Object.keys(membershipGroups)[0] !==
+            "Students (UG/ PG/ Research Scholars)"
+        ) {
+          Object.keys(membershipGroups).forEach((membershipType) => {
+            html += `<h6 class="mt-2">${membershipType}</h6>`;
+            html += `<table class="custom-table"><thead><tr><th>Category</th><th>Fee</th></tr></thead><tbody>`;
 
-          const categoryFees = membershipGroups[membershipType];
-          Object.keys(categoryFees).forEach((category) => {
-            html += `<tr><td>${category}</td><td>${categoryFees[category]}</td></tr>`;
+            const categoryFees = membershipGroups[membershipType];
+            Object.keys(categoryFees).forEach((category) => {
+              html += `<tr><td>${category}</td><td>${categoryFees[category]}</td></tr>`;
+            });
+
+            html += `</tbody></table>`;
           });
-
+        } else {
+          // Direct categories (flat map)
+          html += `<table class="custom-table"><thead><tr><th>Category</th><th>Fee</th></tr></thead><tbody>`;
+          Object.keys(membershipGroups).forEach((category) => {
+            html += `<tr><td>${category}</td><td>${membershipGroups[category]}</td></tr>`;
+          });
           html += `</tbody></table>`;
-        });
-      } else {
-        // Direct categories (flat map)
-        html += `<table class="custom-table"><thead><tr><th>Category</th><th>Fee</th></tr></thead><tbody>`;
-        Object.keys(membershipGroups).forEach((category) => {
-          html += `<tr><td>${category}</td><td>${membershipGroups[category]}</td></tr>`;
-        });
-        html += `</tbody></table>`;
-      }
+        }
+      });
+
+      $(targetId).html(html);
+    }
+
+    renderDetailedFeeTable(
+      "#conferenceTable",
+      data["RegistrationFee (Including 18% GST)"]["Conference"]
+    );
+
+    renderDetailedFeeTable(
+      "#workshopConfTable",
+      data["RegistrationFee (Including 18% GST)"]["Conference and Workshop"]
+    );
+
+    // Notes
+    if (data.Notes) {
+      data.Notes.forEach((note) => {
+        $("#notesList").append(`<li>${note}</li>`);
+      });
+    }
+
+    $(".toggle-btn").click(function () {
+      const target = $(this).data("target");
+      $(target).toggleClass("hidden");
     });
-
-    $(targetId).html(html);
-  }
-
-  renderDetailedFeeTable(
-    "#conferenceTable",
-    data["RegistrationFee (Including 18% GST)"]["Conference"]
-  );
-
-  renderDetailedFeeTable(
-    "#workshopConfTable",
-    data["RegistrationFee (Including 18% GST)"]["Conference and Workshop"]
-  );
-
-  // Notes
-  if (data.Notes) {
-    data.Notes.forEach((note) => {
-      $("#notesList").append(`<li>${note}</li>`);
-    });
-  }
-
-  $(".toggle-btn").click(function () {
-    const target = $(this).data("target");
-    $(target).toggleClass("hidden");
   });
-});
 
   //   --------------------------------------------------- Sponsors Data Fetch -------------------------------------------------------------
 
@@ -437,7 +444,8 @@ $.getJSON("./data/registration_fees_and_notes.json", function (data) {
   $("#addCoauthor").click(function () {
     const newField = `
     <div class="input-group mb-2">
-      <input type="text" name="coauthors[]" class="form-control" placeholder="Co-author name" />
+      <input type="text" name="coauthorNames[]" class="form-control" placeholder="Co-author name" />
+      <input type="text" name="coauthorAffiliations[]" class="form-control" placeholder="Affiliation" />
       <button type="button" class="btn btn-danger remove-coauthor">Remove</button>
     </div>
   `;
@@ -458,10 +466,14 @@ $.getJSON("./data/registration_fees_and_notes.json", function (data) {
     const file = $("#abstractFile")[0].files[0];
 
     let coauthors = [];
-    $("input[name='coauthors[]']").each(function () {
-      const val = $(this).val().trim();
-      if (val !== "") {
-        coauthors.push(val);
+    $("input[name='coauthorNames[]']").each(function (index) {
+      const name = $(this).val().trim();
+      const aff = $("input[name='coauthorAffiliations[]']")
+        .eq(index)
+        .val()
+        .trim();
+      if (name !== "" || aff !== "") {
+        coauthors.push(`${name} (${aff})`);
       }
     });
 
@@ -504,10 +516,17 @@ $.getJSON("./data/registration_fees_and_notes.json", function (data) {
     formData.append("affiliation", $("#affiliation").val().trim());
     formData.append("abstractTitle", $("#abstractTitle").val().trim());
 
-    $("input[name='coauthors[]']").each(function () {
-      const val = $(this).val().trim();
-      if (val !== "") {
-        formData.append("coauthors", val);
+    $("input[name='coauthorNames[]']").each(function (index) {
+      const name = $(this).val().trim();
+      const aff = $("input[name='coauthorAffiliations[]']")
+        .eq(index)
+        .val()
+        .trim();
+      if (name !== "" || aff !== "") {
+        formData.append(
+          "coauthors[]",
+          JSON.stringify({ name, affiliation: aff })
+        );
       }
     });
 
@@ -516,9 +535,8 @@ $.getJSON("./data/registration_fees_and_notes.json", function (data) {
       formData.append("abstractFile", file);
     }
 
-    // Submit to API
     $.ajax({
-      url: "http://localhost:5000/api/abstract/submit",
+      url: "http://localhost:8080/api/abstract/submit",
       type: "POST",
       data: formData,
       processData: false,
@@ -532,7 +550,8 @@ $.getJSON("./data/registration_fees_and_notes.json", function (data) {
         $("#abstractForm")[0].reset();
         $("#coauthorsList").html(`
         <div class="input-group mb-2">
-          <input type="text" name="coauthors[]" class="form-control" placeholder="Co-author name" />
+          <input type="text" name="coauthorNames[]" class="form-control" placeholder="Co-author name" />
+          <input type="text" name="coauthorAffiliations[]" class="form-control" placeholder="Affiliation" />
           <button type="button" class="btn btn-danger remove-coauthor d-none">Remove</button>
         </div>
       `);

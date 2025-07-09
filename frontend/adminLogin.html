@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Login</title>
+  <link rel="stylesheet" href="./style/bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="./style/style.css" />
+</head>
+<body>
+        <nav
+      class="navbar navbar-expand-lg bg-white shadow-sm sticky-top py-3 custom-navbar"
+    >
+      <div class="container d-flex justify-content-between align-items-center">
+        <!-- Logo -->
+        <a
+          class="navbar-brand d-flex align-items-center"
+          href="/"
+        >
+          <img
+            src="./assets/dau-logo.jpg"
+            alt="logo"
+            height="60"
+            class="me-2"
+          />
+          <div class="logo-text d-none d-md-block">
+            <h6 class="mb-0 fw-bold text-primary">
+              Dhirubhai Ambani University
+            </h6>
+          </div>
+        </a>
+
+        <!-- Toggler -->
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarContent"
+        >
+          <div class="hamburger-lines navbar-toggler-icon">
+            <span class="line"></span>
+            <span class="line"></span>
+            <span class="line"></span>
+          </div>
+        </button>
+
+        <!-- Navbar Links -->
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarContent"
+        >
+          <ul class="navbar-nav align-items-center gap-3">
+            <li class="nav-item">
+              <a class="nav-link custom-link" href="./">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link custom-link" href="./#registration-section"
+                >Registration</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link custom-link" href="./speakers.html"
+                >Speakers</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link custom-link" href="./committee.html"
+                >Committee</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link custom-link"
+                href="./#workshop-schedule-section"
+                >Schedule</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link custom-link" href="./#sponsors-section"
+                >Sponsors</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  <div class="container my-5">
+    <div class="card p-4 shadow-sm mx-auto" style="max-width: 400px;">
+      <h3 class="text-center mb-3">Admin Login</h3>
+      <form id="adminLoginForm">
+        <div class="mb-3">
+          <label for="adminEmail" class="form-label">Email</label>
+          <input type="email" id="adminEmail" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label for="adminPassword" class="form-label">Password</label>
+          <input type="password" id="adminPassword" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+      </form>
+      <div id="loginAlert" class="alert alert-danger d-none mt-3" role="alert"></div>
+    </div>
+  </div>
+
+  <script src="./script/jquery.js"></script>
+  <script>
+    $("#adminLoginForm").submit(function (e) {
+      e.preventDefault();
+      const email = $("#adminEmail").val().trim();
+      const password = $("#adminPassword").val().trim();
+
+      $.ajax({
+        url: "http://localhost:8080/api/users/login",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ email, password }),
+        success: function (res) {
+          // Save token in localStorage or sessionStorage
+          localStorage.setItem("adminToken", res.token);
+          // Redirect to admin dashboard page
+          window.location.href = "./adminDashboard.html";
+        },
+        error: function () {
+          $("#loginAlert").removeClass("d-none").text("Invalid credentials. Please try again.");
+        },
+      });
+    });
+  </script>
+</body>
+</html>

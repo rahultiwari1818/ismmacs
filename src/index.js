@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/mongoDB.config.js";
 import abstractRoutes from "./routes/abstract.routes.js";
+import userRoutes from "./routes/user.routes.js";
+
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -23,6 +25,8 @@ connectDB();
 
 // API routes
 app.use("/api/abstract", abstractRoutes);
+
+app.use("/api/users", userRoutes);
 
 // Serve uploaded files if needed
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));

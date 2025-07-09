@@ -1,17 +1,25 @@
-import Abstract from "../model/abstract.model.js";
+import Abstract from "../model/Abstract.model.js";
+import fs from "fs";
+import path from "path";
 
 export const submitAbstract = async (req, res) => {
   try {
-    const { fullName, title, position, affiliation, abstractTitle } = req.body;
-    let coauthors = req.body.coauthors;
+    const {
+      fullName,
+      title,
+      position,
+      affiliation,
+      abstractTitle,
+    } = req.body;
 
-    if (!Array.isArray(coauthors)) {
-      coauthors = coauthors ? [coauthors] : [];
+    // Parse coauthors (array of JSON strings from frontend)
+    let coauthors = [];
+    if (req.body.coauthors && Array.isArray(req.body.coauthors)) {
+      coauthors = req.body.coauthors.map((ca) => JSON.parse(ca));
     }
 
-    if (!req.file) {
-      return res.status(400).json({ success: false, message: "PDF file is required." });
-    }
+    // Save file path
+    const filePath = req.file ? req.file.path : null;
 
     const newAbstract = new Abstract({
       fullName,
@@ -20,13 +28,24 @@ export const submitAbstract = async (req, res) => {
       affiliation,
       abstractTitle,
       coauthors,
-      pdfFilePath: req.file.path
+      abstractFile: filePath,
     });
 
     await newAbstract.save();
-    res.status(201).json({ success: true, message: "Abstract submitted successfully." });
+
+    res.status(201).json({ message: "Abstract submitted successfully!" });
   } catch (error) {
-    console.error("Submission error:", error);
-    res.status(500).json({ success: false, message: "Server error." });
+    console.error("Error submitting abstract:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const getAllAbstracts = async (req, res) => {
+  try {
+    const abstracts = await Abstract.find();
+    res.status(200).json(abstracts);
+  } catch (error) {
+    console.error("Fetch Abstracts Error:", error);
+    res.status(500).json({ message: "Failed to fetch abstracts" });
   }
 };

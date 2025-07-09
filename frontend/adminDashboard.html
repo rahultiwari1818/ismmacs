@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard - Abstracts</title>
+  <link rel="stylesheet" href="./style/bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="./style/style.css" />
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top py-3 custom-navbar">
+    <div class="container d-flex justify-content-between align-items-center">
+      <a class="navbar-brand d-flex align-items-center" href="/">
+        <img src="./assets/dau-logo.jpg" alt="logo" height="60" class="me-2" />
+        <div class="logo-text d-none d-md-block">
+          <h6 class="mb-0 fw-bold text-primary">Dhirubhai Ambani University</h6>
+        </div>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <div class="hamburger-lines navbar-toggler-icon">
+          <span class="line"></span><span class="line"></span><span class="line"></span>
+        </div>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
+        <ul class="navbar-nav align-items-center gap-3">
+          <li class="nav-item"><a class="nav-link custom-link" href="./">Home</a></li>
+          <li class="nav-item"><a class="nav-link custom-link" href="./#registration-section">Registration</a></li>
+          <li class="nav-item"><a class="nav-link custom-link" href="./speakers.html">Speakers</a></li>
+          <li class="nav-item"><a class="nav-link custom-link" href="./committee.html">Committee</a></li>
+          <li class="nav-item"><a class="nav-link custom-link" href="./#workshop-schedule-section">Schedule</a></li>
+          <li class="nav-item"><a class="nav-link custom-link" href="./#sponsors-section">Sponsors</a></li>
+          <li class="nav-item">
+            <button id="logoutBtn" class="btn btn-outline-danger btn-sm">Logout</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container my-5">
+    <h2 class="mb-4">Submitted Abstracts</h2>
+    <table class="table table-bordered table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>#</th>
+          <th>Full Name</th>
+          <th>Title</th>
+          <th>Affiliation</th>
+          <th>Abstract Title</th>
+          <th>Co-authors</th>
+          <th>PDF Link</th>
+        </tr>
+      </thead>
+      <tbody id="abstractTableBody">
+        <!-- Abstract data will be inserted here -->
+      </tbody>
+    </table>
+  </div>
+
+  <script src="./script/jquery.js"></script>
+  <script>
+    $(document).ready(function () {
+      const token = localStorage.getItem("adminToken");
+      if (!token) {
+        window.location.href = "./adminLogin.html";
+        return;
+      }
+
+      $.ajax({
+        url: "http://localhost:8080/api/abstract/all",
+        type: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+        success: function (abstracts) {
+          abstracts.forEach((item, index) => {
+            let coauthorsHtml = "None";
+            if (item.coauthors && item.coauthors.length > 0) {
+              coauthorsHtml = item.coauthors
+                .map((c) => `${c.name} (${c.affiliation})`)
+                .join("<br>");
+            }
+
+            $("#abstractTableBody").append(`
+              <tr>
+                <td>${index + 1}</td>
+                <td>${item.fullName}</td>
+                <td>${item.title}</td>
+                <td>${item.affiliation}</td>
+                <td>${item.abstractTitle}</td>
+                <td>${coauthorsHtml}</td>
+                <td><a href="/${item.pdfFilePath}" target="_blank">View PDF</a></td>
+              </tr>
+            `);
+          });
+        },
+        error: function () {
+          alert("Failed to load abstracts. Please try again.");
+        },
+      });
+
+      $("#logoutBtn").click(function () {
+        localStorage.removeItem("adminToken");
+        window.location.href = "./adminLogin.html";
+      });
+    });
+  </script>
+</body>
+</html>
