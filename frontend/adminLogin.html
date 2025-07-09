@@ -102,15 +102,22 @@
     </div>
   </div>
 
-  <script src="./script/jquery.js"></script>
-  <script>
+    <script src="./script/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script src="./script/jquery.js"></script>
+    <script src="./script/script.js"></script>
+
+    <script src="./script/registrationFormScript.js"></script>
+    <script src="./script/payment.js"></script>
+      <script>
     $("#adminLoginForm").submit(function (e) {
       e.preventDefault();
       const email = $("#adminEmail").val().trim();
       const password = $("#adminPassword").val().trim();
 
       $.ajax({
-        url: "http://localhost:8080/api/users/login",
+        url: "/api/users/login",
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify({ email, password }),

@@ -536,7 +536,7 @@ $(document).ready(function () {
     }
 
     $.ajax({
-      url: "http://localhost:8080/api/abstract/submit",
+      url: "/api/abstract/submit",
       type: "POST",
       data: formData,
       processData: false,
