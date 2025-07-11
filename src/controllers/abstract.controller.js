@@ -1,6 +1,7 @@
 import Abstract from "../model/abstract.model.js";
 import fs from "fs";
 import path from "path";
+import archiver from "archiver";
 
 export const submitAbstract = async (req, res) => {
   try {
@@ -48,4 +49,16 @@ export const getAllAbstracts = async (req, res) => {
     console.error("Fetch Abstracts Error:", error);
     res.status(500).json({ message: "Failed to fetch abstracts" });
   }
+};
+
+
+export const downloadAllAbstractsZip = (req, res) => {
+  const abstractsDir = path.join("uploads"); // Update if needed
+  const archive = archiver("zip", { zlib: { level: 9 } });
+
+  res.attachment("abstracts.zip");
+  archive.pipe(res);
+
+  archive.directory(abstractsDir, false);
+  archive.finalize();
 };

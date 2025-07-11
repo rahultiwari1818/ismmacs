@@ -643,6 +643,31 @@ label.error {
   font-size: 14px;
 }
 
+.form-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: #1e3a8a;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+#feeAmount {
+  margin-top: 10px;
+}
+
+.btn-success {
+  background-color: #10b981;
+  border-color: #10b981;
+}
+
+.btn-success:hover {
+  background-color: #059669;
+  border-color: #059669;
+}
+
 
 /*  ------------------------------------------------- Reg Data  CSS -------------------------- */
 .section {

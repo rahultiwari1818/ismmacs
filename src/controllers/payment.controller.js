@@ -1,6 +1,8 @@
 import { encrypt, generateReferenceNo } from "../utils/utils.js";
 import Registration from "../model/registration.model.js";
 
+
+
 export const initiateRegistrationAndPayment = async (req, res) => {
   try {
     const {
@@ -16,13 +18,21 @@ export const initiateRegistrationAndPayment = async (req, res) => {
       amount,
     } = req.body;
 
-    if (!amount || !firstName || !lastName || !email || !phone || !category) {
-      return res.status(400).json({ message: "All required fields are missing." });
+    if (!firstName || !lastName || !email || !phone || !category || !amount) {
+      return res.status(400).json({ message: "All required fields must be filled." });
+    }
+
+    let membershipReceiptPath = null;
+
+    if (membership === "New ISMMACS Member") {
+      if (!req.file) {
+        return res.status(400).json({ message: "Membership receipt is required for New ISMMACS Member." });
+      }
+      membershipReceiptPath = req.file.path;
     }
 
     const referenceNo = generateReferenceNo();
 
-    // Create DB record (Pending payment)
     const newReg = await Registration.create({
       firstName,
       lastName,
@@ -34,23 +44,23 @@ export const initiateRegistrationAndPayment = async (req, res) => {
       category,
       address,
       amount,
+      membershipReceiptPath,
       paymentStatus: "Pending",
       paymentReference: referenceNo,
     });
 
-    // Eazypay params
     const merchantId = process.env.MERCHANT_ID;
     const subMerchantId = process.env.SUB_MERCHANT_ID;
     const aesKey = process.env.AES_KEY;
-    const returnUrl = process.env.RETURN_URL; // Your endpoint to handle payment response
+    const returnUrl = process.env.RETURN_URL;
 
-    // Encrypt fields
-    const encryptedMandatoryFields = encrypt(`${referenceNo}|${subMerchantId}|${amount}`, aesKey);
+    const mandatoryFields = `${referenceNo}|${subMerchantId}|${amount}`;
+    const encryptedMandatoryFields = encrypt(mandatoryFields, aesKey);
     const encryptedReturnUrl = encrypt(returnUrl, aesKey);
     const encryptedReferenceNo = encrypt(referenceNo, aesKey);
     const encryptedSubmerchantid = encrypt(subMerchantId, aesKey);
     const encryptedTransactionAmount = encrypt(amount, aesKey);
-    const encryptedPaymode = encrypt("9", aesKey); // Assuming 9 = all pay modes
+    const encryptedPaymode = encrypt("9", aesKey);
 
     const finalUrl =
       `https://eazypayuat.icicibank.com/EazyPG?merchantid=${merchantId}` +
@@ -63,15 +73,18 @@ export const initiateRegistrationAndPayment = async (req, res) => {
       `&paymode=${encodeURIComponent(encryptedPaymode)}`;
 
     return res.status(200).json({
-      link: finalUrl,
+      paymentLink: finalUrl,
       registrationId: newReg._id,
       referenceNo: referenceNo,
     });
   } catch (error) {
-    console.error("Error while initiating registration/payment: ", error);
+    console.error("Error initiating registration/payment:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
+
 
 export const handlePaymentCallback = async (req, res) => {
   try {

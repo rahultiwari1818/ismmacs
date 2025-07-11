@@ -12,8 +12,12 @@ const storage = multer.diskStorage({
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    const uniqueName = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueName + path.extname(file.originalname));
+    // Assuming `fullName` is sent in body
+    let fullName = req.body.fullName || "user";
+    // Remove spaces and special characters for filename safety
+    fullName = fullName.replace(/[^a-zA-Z0-9]/g, "_");
+    const timestamp = Date.now();
+    cb(null, `${fullName}-${timestamp}${path.extname(file.originalname)}`);
   }
 });
 
@@ -27,7 +31,7 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 40 * 1024 * 1024 },
   fileFilter
 });
 

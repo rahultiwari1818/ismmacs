@@ -16,6 +16,7 @@
     </style>
   </head>
   <body>
+    <!-- Navbar -->
     <nav
       class="navbar navbar-expand-lg bg-white shadow-sm sticky-top py-3 custom-navbar"
     >
@@ -33,7 +34,7 @@
             </h6>
           </div>
         </a>
-    <button
+        <button
           class="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
@@ -76,8 +77,8 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link custom-link" href="./#sponsors-section"
-                >Sponsors</a
+              <a class="nav-link custom-link" href="./allRegistrations.html"
+                >All Users</a
               >
             </li>
             <li class="nav-item">
@@ -92,8 +93,19 @@
 
     <div class="container my-5">
       <h2 class="mb-4 text-center">Submitted Abstracts</h2>
+      <div class="d-flex gap-2 mb-3">
+        <button id="exportExcel" class="btn btn-primary btn-sm">
+          Export to Excel
+        </button>
+        <button id="downloadAbstracts" class="btn btn-success btn-sm">
+          Download All Abstracts (ZIP)
+        </button>
+      </div>
       <div class="table-responsive">
-        <table class="table table-bordered table-hover align-middle">
+        <table
+          class="table table-bordered table-hover align-middle"
+          id="abstractTable"
+        >
           <thead class="table-dark">
             <tr>
               <th>#</th>
@@ -113,13 +125,9 @@
     </div>
 
     <script src="./script/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script> -->
-
     <script src="./script/jquery.js"></script>
-    <script src="./script/script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-    <!-- <script src="./script/registrationFormScript.js"></script>
-    <script src="./script/payment.js"></script> -->
     <script>
       $(document).ready(function () {
         const token = localStorage.getItem("adminToken");
@@ -128,35 +136,43 @@
           return;
         }
 
+        let abstractsData = [];
+
         $.ajax({
           url: "/api/abstract/all",
           type: "GET",
           headers: { Authorization: `Bearer ${token}` },
           success: function (abstracts) {
+            if (abstracts.length === 0) {
+              $("#abstractTableBody").append(
+                `<tr><td colspan="7" class="text-center">No Abstracts found.</td></tr>`
+              );
+              return;
+            }
+
+            abstractsData = abstracts; // Store for export
+
             abstracts.forEach((item, index) => {
               let coauthorsHtml = "None";
               if (item.coauthors && item.coauthors.length > 0) {
                 coauthorsHtml = item.coauthors
-                  .map(
-                    (c) =>
-                      `<span class="d-block word-wrap">${c.name} (${c.affiliation})</span>`
-                  )
-                  .join("");
+                  .map((c) => `${c.name} (${c.affiliation})`)
+                  .join("<br>");
               }
 
               $("#abstractTableBody").append(`
-              <tr>
-                <td>${index + 1}</td>
-                <td class="word-wrap">${item.fullName}</td>
-                <td class="word-wrap">${item.title}</td>
-                <td class="word-wrap">${item.affiliation}</td>
-                <td class="word-wrap">${item.abstractTitle}</td>
-                <td>${coauthorsHtml}</td>
-                <td><a href="/${
-                  item.abstractFile
-                }" target="_blank" class="btn btn-sm btn-primary">View PDF</a></td>
-              </tr>
-            `);
+                <tr>
+                  <td>${index + 1}</td>
+                  <td class="word-wrap">${item.fullName}</td>
+                  <td class="word-wrap">${item.title}</td>
+                  <td class="word-wrap">${item.affiliation}</td>
+                  <td class="word-wrap">${item.abstractTitle}</td>
+                  <td class="word-wrap">${coauthorsHtml}</td>
+                  <td><a href="/${
+                    item.abstractFile
+                  }" target="_blank" class="btn btn-sm btn-primary">View PDF</a></td>
+                </tr>
+              `);
             });
           },
           error: function () {
@@ -167,6 +183,40 @@
         $("#logoutBtn").click(function () {
           localStorage.removeItem("adminToken");
           window.location.href = "./adminLogin.html";
+        });
+
+        $("#downloadAbstracts").click(function () {
+          window.location.href = "/api/abstract/downloadAllZip";
+        });
+
+        $("#exportExcel").click(function () {
+          if (!abstractsData || abstractsData.length === 0) {
+            alert("No data to export.");
+            return;
+          }
+
+          const exportData = abstractsData.map((item, index) => ({
+            "S.No.": index + 1,
+            "Full Name": item.fullName,
+            Title: item.title,
+            Affiliation: item.affiliation,
+            "Abstract Title": item.abstractTitle,
+            "Co-authors":
+              item.coauthors && item.coauthors.length > 0
+                ? item.coauthors
+                    .map((c) => `${c.name} (${c.affiliation})`)
+                    .join(", ")
+                : "None",
+            "PDF File": item.abstractFile
+              ? `${window.location.origin}/${item.abstractFile}`
+              : "Not Uploaded",
+          }));
+
+          const worksheet = XLSX.utils.json_to_sheet(exportData);
+          const workbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(workbook, worksheet, "Abstracts");
+
+          XLSX.writeFile(workbook, "Abstracts.xlsx");
         });
       });
     </script>

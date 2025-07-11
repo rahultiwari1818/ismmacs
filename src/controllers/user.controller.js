@@ -2,6 +2,10 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../model/user.model.js";
 
+
+// controllers/registration.controller.js
+import Registration from "../model/registration.model.js";
+
 export const registerUser = async (req, res) => {
   try {
     const { fullName, email, password } = req.body;
@@ -67,5 +71,17 @@ export const loginUser = async (req, res) => {
   } catch (error) {
     console.error("Login Error:", error);
     res.status(500).json({ message: "Server error during login" });
+  }
+};
+
+
+
+export const getAllRegistrations = async (req, res) => {
+  try {
+    const registrations = await Registration.find().sort({ createdAt: -1 });
+    res.status(200).json(registrations);
+  } catch (error) {
+    console.error("Error fetching registrations:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };

@@ -245,14 +245,17 @@ $(document).ready(function () {
   });
 
   //   --------------------------------------- Registration Notes Data fetch ------------------------------------------------------------
- let feeData = {};
+  let feeData = {};
 
   $.getJSON("./data/registration_fees_and_notes.json", function (data) {
     feeData = data["RegistrationFee (Including 18% GST)"];
 
     // Render tables at top
     renderDetailedFeeTable("#conferenceTable", feeData["Conference"]);
-    renderDetailedFeeTable("#workshopConfTable", feeData["Conference and Workshop"]);
+    renderDetailedFeeTable(
+      "#workshopConfTable",
+      feeData["Conference and Workshop"]
+    );
 
     if (data.Notes) {
       data.Notes.forEach((note) => {
@@ -273,7 +276,11 @@ $(document).ready(function () {
         !Array.isArray(membershipGroups) &&
         Object.values(membershipGroups)[0] instanceof Object;
 
-      if (hasMembershipGroups && Object.keys(membershipGroups)[0] !== "Students (UG/ PG/ Research Scholars)") {
+      if (
+        hasMembershipGroups &&
+        Object.keys(membershipGroups)[0] !==
+          "Students (UG/ PG/ Research Scholars)"
+      ) {
         Object.keys(membershipGroups).forEach((membershipType) => {
           html += `<h6 class="mt-2">${membershipType}</h6>`;
           html += `<div class="table-wrapper"><table class="custom-table"><thead><tr><th>Category</th><th>Fee</th></tr></thead><tbody>`;
@@ -309,110 +316,169 @@ $(document).ready(function () {
     $(targetId).html(html);
   }
 
-  // Calculate fee on selection
-  $("#nationality, #membership, #category").change(function () {
-    const nationality = $("#nationality").val();
-    const membership = $("#membership").val();
-    const category = $("#category").val();
-
-    let fee = "";
-
-    if (nationality && category) {
-      if (nationality === "Indian Participants" && membership) {
-        try {
-          fee = feeData["Conference"][nationality][membership][category];
-        } catch {
-          fee = "";
-        }
-      } else if (nationality === "Foreign Participants") {
-        try {
-          fee = feeData["Conference"][nationality][category];
-        } catch {
-          fee = "";
-        }
-      }
-    }
-
-    if (fee) {
-      $("#feeAmount").text("Fee: " + fee);
+  $("#membership").change(function () {
+    const selected = $(this).val();
+    if (selected === "New ISMMACS Member") {
+      $("#membershipReceiptGroup").removeClass("d-none");
+      $("#membershipReceipt").attr("required", true);
     } else {
-      $("#feeAmount").text("");
+      $("#membershipReceiptGroup").addClass("d-none");
+      $("#membershipReceipt").removeAttr("required");
     }
   });
 
-  // Validate and submit
-  $("#proceedToPay").click(function () {
-    const requiredFields = [
-      "nationality",
-      "category",
-      "firstName",
-      "lastName",
-      "instituteName",
-      "email",
-      "phone",
-      "address"
-    ];
+  $("#nationality").change(function () {
+    if ($(this).val() === "Indian Participants") {
+      $("#membership").prop("disabled", false);
+    } else {
+      $("#membership").val("");
+      $("#membership").prop("disabled", true);
+    }
+    $("#feeAmount").text("");
+  });
 
-    let valid = true;
+  $("#programType, #membership, #category").change(function () {
+    updateFeeDisplay();
+  });
 
-    requiredFields.forEach((id) => {
-      const val = $("#" + id).val()?.trim();
-      if (!val) {
-        $("#" + id).addClass("error");
-        valid = false;
-      } else {
-        $("#" + id).removeClass("error");
-      }
-    });
+  function updateFeeDisplay() {
+    const nationality = $("#nationality").val();
+    const membership = $("#membership").val();
+    const category = $("#category").val();
+    const programType = $("#programType").val();
 
-    if (!valid) {
-      alert("Please fill all required fields correctly.");
+    if (!nationality || !category || !programType) {
+      $("#feeAmount").text("");
       return;
     }
 
-    // Parse fee
-    let fee = $("#feeAmount").text().replace("Fee: ", "").replace("Rs ", "").split("/")[1]?.trim();
-    if (!fee) {
-      fee = $("#feeAmount").text().replace("Fee: ", "").replace("Rs ", "").trim();
+    const fee = getFeeAmount(nationality, membership, category, programType);
+    if (fee) {
+      $("#feeAmount").text(`Fee: Rs. ${fee}`);
+    } else {
+      $("#feeAmount").text("Please select valid options.");
     }
-    if (fee.includes(" ")) {
-      fee = fee.split(" ")[0];
+  }
+
+  function getFeeAmount(nationality, membership, category, programType) {
+    const feeKey =
+      programType === "Conference and Workshop"
+        ? "Conference and Workshop"
+        : "Conference";
+    const nationalityData = feeData[feeKey][nationality];
+
+    if (nationality === "Indian Participants") {
+      if (!membership || !nationalityData[membership]) return null;
+      let amount = nationalityData[membership][category];
+      return cleanAmount(amount);
+    } else {
+      let amount = nationalityData[category];
+      return cleanAmount(amount);
+    }
+  }
+
+  function cleanAmount(amount) {
+    if (amount.includes("/")) {
+      amount = amount.split("/")[1].trim();
+    }
+    amount = amount.replace("Rs ", "").replace(",", "").trim();
+    return amount;
+  }
+
+  $("#proceedToPay").click(function () {
+    const nationality = $("#nationality").val();
+    const programType = $("#programType").val();
+    const membership = $("#membership").val();
+    const category = $("#category").val();
+    const firstName = $("#firstName").val().trim();
+    const lastName = $("#lastName").val().trim();
+    const email = $("#email").val().trim();
+    const phone = $("#phone").val().trim();
+    const institute = $("#institute").val().trim();
+
+    if (
+      !nationality ||
+      !programType ||
+      !category ||
+      !firstName ||
+      !lastName ||
+      !email ||
+      !phone ||
+      !institute
+    ) {
+      showCustomDialog("Validation Error", "Please fill all required fields.");
+      return;
     }
 
-    // Prepare payload
-    const payload = {
-      nationality: $("#nationality").val(),
-      membership: $("#membership").val(),
-      category: $("#category").val(),
-      firstName: $("#firstName").val().trim(),
-      lastName: $("#lastName").val().trim(),
-      instituteName: $("#instituteName").val().trim(),
-      email: $("#email").val().trim(),
-      phone: $("#phone").val().trim(),
-      address: $("#address").val().trim(),
-      amount: fee
-    };
+    if (nationality === "Indian Participants" && !membership) {
+      showCustomDialog("Validation Error", "Please select Membership Type.");
+      return;
+    }
 
-    // Call backend payment API
+    if (membership === "New ISMMACS Member") {
+      const membershipFile = $("#membershipReceipt")[0].files[0];
+      if (!membershipFile) {
+        showCustomDialog(
+          "Validation Error",
+          "Please upload your ISMMACS membership receipt."
+        );
+        return;
+      }
+    }
+
+    const amount = getFeeAmount(nationality, membership, category, programType);
+    if (!amount) {
+      showCustomDialog(
+        "Error",
+        "Could not determine fee. Please check your selections."
+      );
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("nationality", nationality);
+    formData.append("programType", programType);
+    formData.append(
+      "membershipType",
+      nationality === "Indian Participants" ? membership : ""
+    );
+    formData.append("category", category);
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("email", email);
+    formData.append("phone", phone);
+    formData.append("institute", institute);
+    formData.append("amount", amount);
+
+    if (membership === "New ISMMACS Member") {
+      const membershipFile = $("#membershipReceipt")[0].files[0];
+      formData.append("membershipReceipt", membershipFile);
+    }
+
     $.ajax({
-      url: "/api/payment/payment",
+      url: "/api/registration/register",
       type: "POST",
-      contentType: "application/json",
-      data: JSON.stringify(payload),
+      data: formData,
+      processData: false,
+      contentType: false,
       success: function (response) {
         if (response.link) {
           window.location.href = response.link;
         } else {
-          alert("Error: Payment link not returned.");
+          showCustomDialog(
+            "Info",
+            "Registration saved, but payment link not returned."
+          );
         }
       },
-      error: function () {
-        alert("Payment initiation failed.");
-      }
+      error: function (xhr) {
+        console.error(xhr);
+        showCustomDialog("Error", "Failed to register. Please try again.");
+      },
     });
   });
 
-   $(".toggle-btn").click(function () {
+  $(".toggle-btn").click(function () {
     const target = $(this).data("target");
     $(target).toggleClass("hidden");
   });
@@ -546,6 +612,9 @@ $(document).ready(function () {
 
   // Add co-author
   $("#addCoauthor").click(function () {
+
+    
+
     const newField = `
     <div class="input-group mb-2">
       <input type="text" name="coauthorNames[]" class="form-control" placeholder="Co-author name" />
@@ -720,4 +789,13 @@ $(document).ready(function () {
 function toggleMore(button, index) {
   $(`.hidden-${index}`).removeClass("hidden-interest");
   $(button).hide();
+}
+
+function showCustomDialog(title, message) {
+  $("#customAlertTitle").text(title);
+  $("#customAlertBody").html(message);
+  const modal = new bootstrap.Modal(
+    document.getElementById("customAlertModal")
+  );
+  modal.show();
 }

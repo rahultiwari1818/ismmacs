@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>All Registrations - Admin Dashboard</title>
+  <link rel="stylesheet" href="./style/bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="./style/style.css" />
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top py-3 custom-navbar">
+    <div class="container d-flex justify-content-between align-items-center">
+      <a class="navbar-brand d-flex align-items-center" href="/">
+        <img src="./assets/dau-logo.jpg" alt="logo" height="60" class="me-2" />
+        <div class="logo-text d-none d-md-block">
+          <h6 class="mb-0 fw-bold text-primary">Dhirubhai Ambani University</h6>
+        </div>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <div class="hamburger-lines navbar-toggler-icon">
+          <span class="line"></span>
+          <span class="line"></span>
+          <span class="line"></span>
+        </div>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
+        <ul class="navbar-nav align-items-center gap-2">
+          <li class="nav-item"><a class="nav-link custom-link" href="./">Home</a></li>
+          <li class="nav-item"><a class="nav-link custom-link" href="./#registration-section">Registration</a></li>
+          <li class="nav-item"><a class="nav-link custom-link" href="./speakers.html">Speakers</a></li>
+          <li class="nav-item"><a class="nav-link custom-link" href="./committee.html">Committee</a></li>
+          <li class="nav-item"><a class="nav-link custom-link" href="./#workshop-schedule-section">Schedule</a></li>
+          <li class="nav-item"><a class="nav-link custom-link" href="./adminDashboard.html">Abstracts</a></li>
+          <li class="nav-item">
+            <button id="logoutBtn" class="btn btn-outline-danger btn-sm">Logout</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <div class="container my-5">
+    <h2 class="mb-4">All Conference Registrations</h2>
+
+    <div class="d-flex gap-2 mb-3">
+      <button id="exportExcel" class="btn btn-primary btn-sm">Export to Excel</button>
+      <!-- <button id="downloadAbstracts" class="btn btn-success btn-sm">Download All Abstracts (ZIP)</button> -->
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Institute</th>
+            <th>Category</th>
+            <th>Nationality</th>
+            <th>Membership</th>
+            <th>Receipt</th>
+            <th>Amount</th>
+            <th>Reference No</th>
+            <th>Payment Status</th>
+          </tr>
+        </thead>
+        <tbody id="registrationTableBody">
+          <!-- Registrations will be inserted here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="./script/jquery.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script>
+    let allRegistrations = [];
+
+    $(document).ready(function () {
+      const token = localStorage.getItem("adminToken");
+      if (!token) {
+        window.location.href = "./adminLogin.html";
+        return;
+      }
+
+      $.ajax({
+        url: "/api/users/allRegistrations",
+        type: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+        success: function (registrations) {
+          allRegistrations = registrations;
+          if (!registrations.length) {
+            $("#registrationTableBody").append(`<tr><td colspan="12" class="text-center">No registrations found.</td></tr>`);
+            return;
+          }
+
+          registrations.forEach((item, index) => {
+            let receiptHtml = "-";
+            if (item.membershipReceiptPath) {
+              receiptHtml = `<a href="/${item.membershipReceiptPath}" target="_blank">View</a>`;
+            }
+
+            $("#registrationTableBody").append(`
+              <tr>
+                <td>${index + 1}</td>
+                <td>${item.firstName} ${item.lastName}</td>
+                <td>${item.email}</td>
+                <td>${item.phone}</td>
+                <td>${item.instituteName || "-"}</td>
+                <td>${item.category}</td>
+                <td>${item.nationality}</td>
+                <td>${item.membership || "-"}</td>
+                <td>${receiptHtml}</td>
+                <td>${item.amount}</td>
+                <td>${item.paymentReference || "-"}</td>
+                <td><span class="badge ${item.paymentStatus === "Success" ? "bg-success" : item.paymentStatus === "Failed" ? "bg-danger" : "bg-warning text-dark"}">${item.paymentStatus}</span></td>
+              </tr>
+            `);
+          });
+        },
+        error: function (err) {
+          console.error("Error loading registrations: ", err);
+          if (err.status !== 200) {
+            window.location.href = "/";
+          }
+        },
+      });
+
+      $("#logoutBtn").click(function () {
+        localStorage.removeItem("adminToken");
+        window.location.href = "./adminLogin.html";
+      });
+
+      $("#exportExcel").click(function () {
+        if (!allRegistrations.length) {
+          alert("No data to export.");
+          return;
+        }
+        const data = allRegistrations.map((reg) => ({
+          Name: reg.firstName + " " + reg.lastName,
+          Email: reg.email,
+          Phone: reg.phone,
+          Institute: reg.instituteName || "-",
+          Category: reg.category,
+          Nationality: reg.nationality,
+          Membership: reg.membership || "-",
+          Amount: reg.amount,
+          ReferenceNo: reg.paymentReference || "-",
+          PaymentStatus: reg.paymentStatus || "Pending"
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Registrations");
+        XLSX.writeFile(wb, "Registrations.xlsx");
+      });
+
+      $("#downloadAbstracts").click(function () {
+        window.location.href = "/api/abstract/downloadAllZip";
+      });
+    });
+  </script>
+</body>
+</html>
