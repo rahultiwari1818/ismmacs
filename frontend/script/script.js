@@ -246,72 +246,113 @@ $(document).ready(function () {
 
   //   --------------------------------------- Registration Notes Data fetch ------------------------------------------------------------
 
-  $.getJSON("./data/registration_fees_and_notes.json", function (data) {
-    function renderDetailedFeeTable(targetId, feeData) {
-      let html = "";
+$.getJSON("./data/registration_fees_and_notes.json", function (data) {
+  function renderDetailedFeeTable(targetId, feeData) {
+    let html = "";
 
-      Object.keys(feeData).forEach((nationality) => {
-        html += `<h5 class="mt-4">${nationality}</h5>`;
+    Object.keys(feeData).forEach((nationality) => {
+      html += `<h5 class="mt-4">${nationality}</h5>`;
 
-        const membershipGroups = feeData[nationality];
+      const membershipGroups = feeData[nationality];
 
-        // Check if nested membership exists
-        const hasMembershipGroups =
-          typeof membershipGroups === "object" &&
-          !Array.isArray(membershipGroups) &&
-          Object.values(membershipGroups)[0] instanceof Object;
+      const hasMembershipGroups =
+        typeof membershipGroups === "object" &&
+        !Array.isArray(membershipGroups) &&
+        Object.values(membershipGroups)[0] instanceof Object;
 
-        if (
-          hasMembershipGroups &&
-          Object.keys(membershipGroups)[0] !==
-            "Students (UG/ PG/ Research Scholars)"
-        ) {
-          Object.keys(membershipGroups).forEach((membershipType) => {
-            html += `<h6 class="mt-2">${membershipType}</h6>`;
-            html += `<table class="custom-table"><thead><tr><th>Category</th><th>Fee</th></tr></thead><tbody>`;
+      if (
+        hasMembershipGroups &&
+        Object.keys(membershipGroups)[0] !==
+          "Students (UG/ PG/ Research Scholars)"
+      ) {
+        Object.keys(membershipGroups).forEach((membershipType) => {
+          html += `<h6 class="mt-2">${membershipType}</h6>`;
+          html += `<div class="table-wrapper"><table class="custom-table"><thead><tr><th>Category</th><th>Fee</th><th>Action</th></tr></thead><tbody>`;
 
-            const categoryFees = membershipGroups[membershipType];
-            Object.keys(categoryFees).forEach((category) => {
-              html += `<tr><td>${category}</td><td>${categoryFees[category]}</td></tr>`;
-            });
-
-            html += `</tbody></table>`;
+          const categoryFees = membershipGroups[membershipType];
+          Object.keys(categoryFees).forEach((category) => {
+            const fee = categoryFees[category];
+            html += `
+              <tr>
+                <td>${category}</td>
+                <td>${fee}</td>
+                <td><button class="btn btn-success register-btn" data-amount="${fee}">Register</button></td>
+              </tr>
+            `;
           });
+
+          html += `</tbody></table></div>`;
+        });
+      } else {
+        html += `<div class="table-wrapper"><table class="custom-table"><thead><tr><th>Category</th><th>Fee</th><th>Action</th></tr></thead><tbody>`;
+        Object.keys(membershipGroups).forEach((category) => {
+          const fee = membershipGroups[category];
+          html += `
+            <tr>
+              <td>${category}</td>
+              <td>${fee}</td>
+              <td><button class="btn btn-success register-btn" data-amount="${fee}">Register</button></td>
+            </tr>
+          `;
+        });
+        html += `</tbody></table></div>`;
+      }
+    });
+
+    $(targetId).html(html);
+  }
+
+  renderDetailedFeeTable(
+    "#conferenceTable",
+    data["RegistrationFee (Including 18% GST)"]["Conference"]
+  );
+
+  renderDetailedFeeTable(
+    "#workshopConfTable",
+    data["RegistrationFee (Including 18% GST)"]["Conference and Workshop"]
+  );
+
+  // Notes
+  if (data.Notes) {
+    data.Notes.forEach((note) => {
+      $("#notesList").append(`<li>${note}</li>`);
+    });
+  }
+
+  $(".toggle-btn").click(function () {
+    const target = $(this).data("target");
+    $(target).toggleClass("hidden");
+  });
+
+  // Register button click handler
+  $(document).on("click", ".register-btn", function () {
+    let amount = $(this).data("amount");
+
+    // Extract numeric INR part (if "150 USD / Rs 11800")
+    if (amount.includes("/")) {
+      amount = amount.split("/")[1].trim();
+    }
+    amount = amount.replace("Rs ", "").replace(",", "").trim();
+
+    $.ajax({
+      url: "/api/payment/payment",
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify({ amount }),
+      success: function (response) {
+        if (response.link) {
+          window.location.href = response.link;
         } else {
-          // Direct categories (flat map)
-          html += `<table class="custom-table"><thead><tr><th>Category</th><th>Fee</th></tr></thead><tbody>`;
-          Object.keys(membershipGroups).forEach((category) => {
-            html += `<tr><td>${category}</td><td>${membershipGroups[category]}</td></tr>`;
-          });
-          html += `</tbody></table>`;
+          alert("Error: Payment URL not returned.");
         }
-      });
-
-      $(targetId).html(html);
-    }
-
-    renderDetailedFeeTable(
-      "#conferenceTable",
-      data["RegistrationFee (Including 18% GST)"]["Conference"]
-    );
-
-    renderDetailedFeeTable(
-      "#workshopConfTable",
-      data["RegistrationFee (Including 18% GST)"]["Conference and Workshop"]
-    );
-
-    // Notes
-    if (data.Notes) {
-      data.Notes.forEach((note) => {
-        $("#notesList").append(`<li>${note}</li>`);
-      });
-    }
-
-    $(".toggle-btn").click(function () {
-      const target = $(this).data("target");
-      $(target).toggleClass("hidden");
+      },
+      error: function () {
+        alert("Failed to initiate payment.");
+      },
     });
   });
+});
+
 
   //   --------------------------------------------------- Sponsors Data Fetch -------------------------------------------------------------
 

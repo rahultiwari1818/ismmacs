@@ -1,4 +1,4 @@
-import Abstract from "../model/Abstract.model.js";
+import Abstract from "../model/abstract.model.js";
 import fs from "fs";
 import path from "path";
 

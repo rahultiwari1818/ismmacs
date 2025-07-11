@@ -202,9 +202,8 @@ fieldset {
   color: #2d3436;
   line-height: 1.6;
   margin-bottom: 0.5rem;
-  list-style: disc;  
+  list-style: disc;
 }
-
 
 /* -------------------------------------------------------------------- Conference Theme ------------------------------------------------- */
 
@@ -859,7 +858,6 @@ table.custom-table tr:hover {
   text-decoration: underline;
 }
 
-
 /* ---------------------------------------------------------- Call for Abstract Page ------------------------------------------ */
 
 .call-abstract-section {
@@ -1009,52 +1007,76 @@ table.custom-table tr:hover {
   font-size: 1.02rem;
 }
 
-
 /* ------------------------------------------------------------------------- Vibrant campus -------------------------------------------------- */
 /* Vibrant campus gallery styles */
+
+/* Mobile-first default styles */
 .vibrant-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 10px;
+  padding: 10px;
 }
 
 .vibrant-gallery-item {
   position: relative;
   overflow: hidden;
   border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
 }
 
 .vibrant-gallery-item:hover {
-  transform: scale(1.0);
+  transform: scale(1.02);
 }
 
 .vibrant-gallery-item img {
   width: 100%;
-  height: 250px;
+  height: 200px;
   object-fit: cover;
   transition: opacity 0.3s ease;
 }
 
+/* Optional overlay on hover */
 .vibrant-gallery-item::after {
-  /* content: "View"; */
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  color: #fff;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.3);
   opacity: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  font-size: 1.2rem;
   transition: opacity 0.3s ease;
 }
 
 .vibrant-gallery-item:hover::after {
   opacity: 1;
+}
+
+/* Medium screens and up (tablets, small laptops) */
+@media (min-width: 600px) {
+  .vibrant-gallery {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+  }
+
+  .vibrant-gallery-item img {
+    height: 220px;
+  }
+}
+
+/* Large screens */
+@media (min-width: 1024px) {
+  .vibrant-gallery {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+  }
+
+  .vibrant-gallery-item img {
+    height: 250px;
+  }
 }

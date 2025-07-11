@@ -1,9 +1,10 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import connectDB from "./config/mongoDB.config.js";
-import abstractRoutes from "./routes/abstract.routes.js";
-import userRoutes from "./routes/user.routes.js";
+import connectDB from "./src/config/mongoDB.config.js";
+import abstractRoutes from "./src/routes/abstract.routes.js";
+import userRoutes from "./src/routes/user.routes.js";
+import payRoutes from "./src/routes/payment.routes.js";
 
 import path from "path";
 import { fileURLToPath } from "url";
@@ -27,16 +28,17 @@ connectDB();
 app.use("/api/abstract", abstractRoutes);
 
 app.use("/api/users", userRoutes);
+app.use("/api/payment", payRoutes);
 
 // Serve uploaded files if needed
-app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Serve frontend static files
-app.use(express.static(path.join(__dirname, "../frontend")));
+app.use(express.static(path.join(__dirname, "frontend")));
 
 // Fallback route for SPA
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend", "index.html"));
+  res.sendFile(path.join(__dirname, "frontend", "index.html"));
 });
 
 // Start server
