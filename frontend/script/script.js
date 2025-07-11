@@ -340,6 +340,7 @@ $.getJSON("./data/registration_fees_and_notes.json", function (data) {
       contentType: "application/json",
       data: JSON.stringify({ amount }),
       success: function (response) {
+        // alert(response.link)
         if (response.link) {
           window.location.href = response.link;
         } else {

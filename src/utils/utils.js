@@ -17,3 +17,9 @@ export function encrypt(text, key) {
   ]);
   return encrypted.toString('base64');
 }
+
+export const generateReferenceNo = () => {
+  const timestamp = Date.now(); // e.g., 1720625803107
+  const random = Math.floor(Math.random() * 1000); // 3-digit random number
+  return `${timestamp}${random}`; // e.g., 1720625803107743
+};
