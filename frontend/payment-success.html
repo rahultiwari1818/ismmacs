@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Payment Successful</title>
+    <link rel="stylesheet" href="./style/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./style/style.css" />
+</head>
+<body>
+        <nav
+      class="navbar navbar-expand-lg bg-white shadow-sm sticky-top py-3 custom-navbar"
+    >
+      <div class="container d-flex justify-content-between align-items-center">
+        <a class="navbar-brand d-flex align-items-center" href="/">
+          <img
+            src="./assets/dau-logo.jpg"
+            alt="logo"
+            height="60"
+            class="me-2"
+          />
+          <div class="logo-text d-none d-md-block">
+            <h6 class="mb-0 fw-bold text-primary">
+              Dhirubhai Ambani University
+            </h6>
+          </div>
+        </a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarContent"
+        >
+          <div class="hamburger-lines navbar-toggler-icon">
+            <span class="line"></span>
+            <span class="line"></span>
+            <span class="line"></span>
+          </div>
+        </button>
+
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarContent"
+        >
+          <ul class="navbar-nav align-items-center gap-3">
+            <li class="nav-item">
+              <a class="nav-link custom-link" href="./">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link custom-link" href="./#registration-section"
+                >Registration</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link custom-link" href="./speakers.html"
+                >Speakers</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link custom-link" href="./committee.html"
+                >Committee</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link custom-link"
+                href="./#workshop-schedule-section"
+                >Schedule</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link custom-link" href="./#sponsors-section"
+                >Sponsors</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+  <div class="container text-center my-5">
+    <h2 class="text-success">Payment Successful!</h2>
+    <p><strong>Thank you for your registration.</strong></p>
+    <p id="details"></p>
+    <a href="./" class="btn btn-primary mt-3">Go to Home</a>
+  </div>
+
+  
+    <!-- Footer -->
+    <footer class="footer-custom">
+      <div class="footer-container text-center py-3">
+        <p>
+          Developed and Managed by
+          <a href="https://portfolio-rahul-tiwari.vercel.app" target="_blank"
+            >Rahul Tiwari</a
+          >
+        </p>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="./script/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="./script/jquery.js"></script>
+    <script src="./script/script.js"></script>
+    <script src="./script/registrationFormScript.js"></script>
+
+  <script>
+    // Get query params
+    const urlParams = new URLSearchParams(window.location.search);
+    const referenceNo = urlParams.get("referenceNo");
+    const name = urlParams.get("name");
+    const amount = urlParams.get("amount");
+    const email = urlParams.get("email");
+
+    document.getElementById("details").innerHTML = `
+      <strong>Reference Number:</strong> ${referenceNo} <br>
+      <strong>Name:</strong> ${name} <br>
+      <strong>Email:</strong> ${email} <br>
+      <strong>Amount Paid:</strong> Rs ${amount}
+    `;
+  </script>
+</body>
+
+</html>

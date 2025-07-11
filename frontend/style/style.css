@@ -609,6 +609,41 @@ fieldset {
   border-color: red !important;
 }
 
+.form-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1e3a8a;
+}
+
+.form-group label {
+  font-weight: 500;
+}
+
+#feeAmount {
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+.btn-success {
+  background-color: #28a745;
+  border: none;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
+
+input.error, select.error, textarea.error {
+  border-color: #dc3545;
+}
+
+label.error {
+  color: #dc3545;
+  margin-top: 5px;
+  font-size: 14px;
+}
+
+
 /*  ------------------------------------------------- Reg Data  CSS -------------------------- */
 .section {
   margin-bottom: 40px;

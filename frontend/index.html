@@ -1,24 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home</title>
-    <link rel="stylesheet" href="./style/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./style/style.css">
-</head>
+    <link rel="stylesheet" href="./style/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./style/style.css" />
+  </head>
 
-<body>
+  <body>
+    <!-- Navbar -->
     <nav
       class="navbar navbar-expand-lg bg-white shadow-sm sticky-top py-3 custom-navbar"
     >
       <div class="container d-flex justify-content-between align-items-center">
-        <!-- Logo -->
-        <a
-          class="navbar-brand d-flex align-items-center"
-          href="/"
-        >
+        <a class="navbar-brand d-flex align-items-center" href="/">
           <img
             src="./assets/dau-logo.jpg"
             alt="logo"
@@ -32,7 +28,6 @@
           </div>
         </a>
 
-        <!-- Toggler -->
         <button
           class="navbar-toggler"
           type="button"
@@ -46,7 +41,6 @@
           </div>
         </button>
 
-        <!-- Navbar Links -->
         <div
           class="collapse navbar-collapse justify-content-end"
           id="navbarContent"
@@ -86,260 +80,353 @@
         </div>
       </div>
     </nav>
-    <main class="shadow-lg p-3  bg-white rounded">
 
-
-        <!-- Hero Section -->
-        <section class="hero-section">
-            <div class="hero-overlay">
-                <div class="hero-content">
-                    <h1>
-                        Annual Conference of ISMMACS and the International Conference on
-Differential Equations: Theory, Mathematical Modeling, and Scientific Computing
-                    </h1>
-                    <h2>
-                        and <br> Pre-conference Workshop on 
-                        Mathematical Modeling &amp; Dynamical Systems: Computational
-Approaches and Research Horizons
-                        <!-- &amp; Workshop on Scientific Computing, Modeling and Deep Learning (WSCMDL) -->
-                    </h2>
-                    <h2 class="my-4 bg-black">
-                        <img src="./assets/calendar.png" alt="calander" height="50px" width="50px" />
-                        <strong>Sunday 7 december 2025 - Wednesday 10 December 2025</strong>
-                    </h2>
-
-                </div>
-            </div>
-        </section>
-
-
-        <div class="container my-5">
-            <div id="about-workshop-section" class="shadow-lg md:p-3 mb-5 bg-white rounded"></div>
-            <div class="hero-buttons text-center mt-4">
-  <a href="./#registration-section" class="hero-btn">Register Now</a>
-  <a href="./callForAbstract.html" class="hero-btn">Call for Abstract</a>
-  <a href="./callForSymposium.html" class="hero-btn">Call for Symposium</a>
-  <a href="./#call-for-abstract" class="hero-btn">Brochure</a>
-  <a href="./assets/ismmacs_2025_poster.jpg" target="_blank" class="hero-btn">Poster</a>
-</div>
-
+    <main class="shadow-lg p-3 bg-white rounded">
+      <!-- Hero Section -->
+      <section class="hero-section">
+        <div class="hero-overlay">
+          <div class="hero-content text-center">
+            <h1>
+              Annual Conference of ISMMACS and the International Conference on
+              Differential Equations: Theory, Mathematical Modeling, and
+              Scientific Computing
+            </h1>
+            <h2>
+              and <br />
+              Pre-conference Workshop on Mathematical Modeling &amp; Dynamical
+              Systems: Computational Approaches and Research Horizons
+            </h2>
+            <h2 class="my-4 bg-black text-white d-inline-block p-2 rounded">
+              <img
+                src="./assets/calendar.png"
+                alt="calendar"
+                height="50"
+                width="50"
+              />
+              <strong
+                >Sunday 7 December 2025 - Wednesday 10 December 2025</strong
+              >
+            </h2>
+          </div>
         </div>
+      </section>
 
-                <!-- About ISMMACS Section -->
-        <section class="about-ismmacs-section">
-            <div class="container">
-                <h2>About ISMMACS</h2>
-                <p>
-                   The Indian Society for Mathematical Modeling and Computer Simulation (ISMMACS), established in 1993 with its headquarters at IIT Kanpur, has emerged as a pioneering institution committed to advancing the frontiers of mathematical modeling and computational science. Over the decades, ISMMACS has played a transformative role in promoting cutting-edge research and innovation across diverse domains of science, engineering, and technology. The society actively nurtures interdisciplinary collaboration, bridging theoretical advancements with real-world applications that address complex societal and industrial challenges. Through its flagship conferences, thematic workshops, and academic meets, ISMMACS offers an intellectually stimulating platform for scholars, scientists, and professionals to exchange ideas, foster partnerships, and drive scientific excellence. Moreover, the society takes pride in celebrating academic and professional achievements by conferring prestigious awards, medals, and fellowships, thereby encouraging a culture of recognition and excellence within the research community.
-                </p>
-                <p>
-                    For more information, visit the official website:
-                    <a href="https://ismmacs.org.in/index.html" target="_blank">https://ismmacs.org.in</a>
-                </p>
-            </div>
-        </section>
-
-
-
-        <div class="container my-5">
-            <div class="shadow-lg md:p-3 mb-5 bg-white rounded" id="theme-section">
-                <div class="theme-box">
-                    <div class="theme-column" id="workshop-theme"></div>
-                    <div class="theme-column" id="conference-theme"></div>
-                </div>
-            </div>
+      <!-- CTA Buttons -->
+      <div class="container my-5 text-center">
+        <div class="hero-buttons">
+          <a href="./#registration-section" class="hero-btn">Register Now</a>
+          <a href="./callForAbstract.html" class="hero-btn"
+            >Call for Abstract</a
+          >
+          <a href="./callForSymposium.html" class="hero-btn"
+            >Call for Symposium</a
+          >
+          <a href="./#call-for-abstract" class="hero-btn">Brochure</a>
+          <a
+            href="./assets/ismmacs_2025_poster.jpg"
+            target="_blank"
+            class="hero-btn"
+            >Poster</a
+          >
         </div>
-
-
-
-        <!-- <div class="container my-5" id="invited-speakers-section">
-            <div class="shadow-lg md:p-3 py-3 mb-5 bg-white rounded">
-
-                <h2 class="text-center mb-4">Invited Speakers</h2>
-                <div class="speaker-grid " id="speakers-container">
-
-                </div>
-            </div>
-        </div> -->
-
-
-        <div class="container my-5" id="important-dates-section">
-            <div class="shadow-lg md:p-3 mb-5 bg-white rounded">
-
-            </div>
-        </div>
-        <div class="container my-5">
-            <div class="shadow-lg md:p-3 mb-5 bg-white rounded py-5" id="target-audience-section">
-
-                <div class="audience-wrapper">
-                    <h2 id="audience-title"></h2>
-                    <p id="audience-desc"></p>
-                    <div class="audience-cards" id="audience-cards-container"></div>
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="container my-5" id="registration-section">
-            <div class="shadow-lg md:p-3 mb-5 bg-white rounded">
-                <div class="container py-5 px-5">
-
-                     <div class="section">
-                        <div class="title">Registration</div>
-
-                         <!-- <button class="toggle-btn" data-target="#workshopTable">Show Workshop Fees</button>
-                        <div id="workshopTable" class="table-wrapper hidden"></div>  -->
-
-                        <button class="toggle-btn" data-target="#conferenceTable">Show Conference Fees</button>
-                        <div id="conferenceTable" class="table-wrapper hidden"></div>
-
-                        <button class="toggle-btn" data-target="#workshopConfTable">Show Workshop +
-                            Conference Fees</button>
-                        <div id="workshopConfTable" class="table-wrapper hidden"></div>
-
-                    </div> 
-
-                    <div class="section">
-                        <div class="title">Notes</div>
-                        <ul class="note-list" id="notesList"></ul>
-                    </div>
-                </div>
-
-
-            
-<!-- <div class="hero-buttons text-center m-4 py-4">
-  <a href="#registration-section" class="hero-btn">Registration window will open soon.</a>
-   <a href="#call-for-abstract" class="hero-btn">Call for Abstract</a> 
-</div> -->
-
-            </div>
-        </div>
-
-        <div class="container my-5" id="workshop-schedule-section">
-            <div class="shadow-lg p-4 mb-5 bg-white rounded">
-                <h2 class="text-center mb-4"> Schedule</h2>
-                <div class="row gy-4 schedule-card p-3 h-100">
-                    <p class="schedule-day mb-3">
-
-
-                    </p>
-                    TBA
-                </div>
-                <!-- <div id="schedule-container" class="row gy-4"></div> -->
-            </div>
-        </div>
-
-
-
-
-        <!-- <div class="container my-5" id="committee-section">
-            <div class="shadow-lg p-3 mb-5 bg-white rounded">
-                <h2 class="text-center mb-4">Conference Committees</h2>
-                <div class="committee row " id="committee-container">
-                </div>
-            </div>
-        </div> -->
-
-        
-
-        <section class="about-city-section" class="container my-5">
-  <div class="shadow-lg p-3 mb-5 bg-white rounded">
-    <h2>About Gandhinagar & Tourism</h2>
-    <div class="about-city-grid">
-      <div class="about-city-text">
-        <p>
-          Gandhinagar, the capital city of Gujarat, is known for its greenery, wide roads, and planned layout.
-          It is home to many academic institutions and government establishments, offering a calm and disciplined environment.
-        </p>
-        <p>
-          Nearby attractions include:
-          <ul>
-            <li><strong>Akshardham Temple</strong> – A majestic spiritual-cultural campus.</li>
-            <li><strong>Indroda Nature Park</strong> – Known as India’s Jurassic Park.</li>
-            <li><strong>Sabarmati Riverfront</strong> – A scenic place to relax and enjoy the beauty of nature in Ahmedabad.</li>
-            <li><strong>Adalaj Stepwell</strong> – A historical marvel reflecting Indo-Islamic architecture.</li>
-          </ul>
-        </p>
-        <p>
-          The city offers a perfect mix of modern facilities and cultural richness. Visitors can also explore the vibrant local cuisine, handicrafts, and festivals.
-        </p>
-        <a href="https://www.gujarattourism.com" target="_blank" class="tourism-button">Explore Gujarat Tourism</a>
       </div>
-      <div class="about-city-image">
-        <img src="./assets/gandhinagar.png" alt="Gandhinagar Tourism">
+
+      <!-- About ISMMACS -->
+      <section class="about-ismmacs-section">
+        <div class="container">
+          <h2>About ISMMACS</h2>
+          <p>
+            The Indian Society for Mathematical Modeling and Computer Simulation
+            (ISMMACS), established in 1993 with its headquarters at IIT Kanpur,
+            has emerged as a pioneering institution committed to advancing the
+            frontiers of mathematical modeling and computational science.
+          </p>
+          <p>
+            ISMMACS promotes cutting-edge research across diverse domains of
+            science, engineering, and technology. The society bridges
+            theoretical advancements with real-world applications, hosts
+            flagship conferences and workshops, and celebrates academic
+            achievements through awards and fellowships.
+          </p>
+          <p>
+            For more information, visit the official website:
+            <a href="https://ismmacs.org.in/index.html" target="_blank"
+              >https://ismmacs.org.in</a
+            >
+          </p>
+        </div>
+      </section>
+
+      <!-- Themes Section -->
+      <section class="container my-5" id="theme-section">
+        <div class="shadow-lg p-4 bg-white rounded">
+          <div class="theme-box d-md-flex">
+            <div class="theme-column" id="workshop-theme"></div>
+            <div class="theme-column" id="conference-theme"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Important Dates -->
+      <section class="container my-5" id="important-dates-section">
+        <div class="shadow-lg p-4 bg-white rounded"></div>
+      </section>
+
+      <!-- Target Audience -->
+      <section class="container my-5" id="target-audience-section">
+        <div class="shadow-lg p-4 bg-white rounded">
+          <h2 id="audience-title"></h2>
+          <p id="audience-desc"></p>
+          <div class="audience-cards" id="audience-cards-container"></div>
+        </div>
+      </section>
+
+      <!-- Registration Section -->
+      <section class="container my-5" id="registration-section">
+        <div class="shadow-lg p-4 bg-white rounded">
+          <h2 class="text-center mb-4">Registration</h2>
+
+          <button class="toggle-btn mb-2" data-target="#conferenceTable">
+            Show Conference Fees
+          </button>
+          <div id="conferenceTable" class="table-wrapper hidden"></div>
+
+          <button class="toggle-btn mb-4" data-target="#workshopConfTable">
+            Show Workshop + Conference Fees
+          </button>
+          <div id="workshopConfTable" class="table-wrapper hidden"></div>
+
+          <div class="section">
+            <h4>Notes</h4>
+            <ul class="note-list" id="notesList"></ul>
+          </div>
+
+          <!-- Registration Form -->
+          <form
+            id="registrationForm"
+            class="p-4 border rounded bg-light shadow-sm mt-4"
+          >
+            <h3 class="form-title mb-3">Conference Registration Form</h3>
+
+            <div class="form-group mb-3">
+              <label for="nationality"
+                >Nationality <span class="text-danger">*</span></label
+              >
+              <select id="nationality" class="form-control" required>
+                <option value="">Select</option>
+                <option value="Indian Participants">Indian Participants</option>
+                <option value="Foreign Participants">
+                  Foreign Participants
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="membership"
+                >Membership Type <span class="text-danger">*</span></label
+              >
+              <select id="membership" class="form-control" required>
+                <option value="">Select</option>
+                <option value="Non-ISMMACS Member">Non-ISMMACS Member</option>
+                <option value="ISMMACS Member">ISMMACS Member</option>
+              </select>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="category"
+                >Affiliation Category <span class="text-danger">*</span></label
+              >
+              <select id="category" class="form-control" required>
+                <option value="">Select</option>
+                <option value="Students (UG/ PG/ Research Scholars)">
+                  Students (UG/ PG/ Research Scholars)
+                </option>
+                <option value="Faculty/Post Doc">Faculty/Post Doc</option>
+                <option value="Professionals from Industry/ R&Ds">
+                  Professionals from Industry/ R&Ds
+                </option>
+              </select>
+            </div>
+
+            <p id="feeAmount" class="text-primary fw-bold"></p>
+
+            <div class="form-group mb-3">
+              <label>First Name <span class="text-danger">*</span></label>
+              <input type="text" id="firstName" class="form-control" required />
+            </div>
+
+            <div class="form-group mb-3">
+              <label>Last Name <span class="text-danger">*</span></label>
+              <input type="text" id="lastName" class="form-control" required />
+            </div>
+
+            <div class="form-group mb-3">
+              <label>Institute Name <span class="text-danger">*</span></label>
+              <input
+                type="text"
+                id="instituteName"
+                class="form-control"
+                required
+              />
+            </div>
+
+            <div class="form-group mb-3">
+              <label>Email <span class="text-danger">*</span></label>
+              <input type="email" id="email" class="form-control" required />
+            </div>
+
+            <div class="form-group mb-3">
+              <label>Phone Number <span class="text-danger">*</span></label>
+              <input type="text" id="phone" class="form-control" required />
+            </div>
+
+            <div class="form-group mb-3">
+              <label>Address <span class="text-danger">*</span></label>
+              <textarea
+                id="address"
+                class="form-control"
+                rows="2"
+                required
+              ></textarea>
+            </div>
+            <button
+              type="button"
+              id="proceedToPay"
+              class="btn btn-success w-100"
+            >
+              Proceed to Payment
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- Schedule Section -->
+      <div class="container my-5" id="workshop-schedule-section">
+        <div class="shadow-lg p-4 mb-5 bg-white rounded">
+          <h2 class="text-center mb-4">Schedule</h2>
+          <div class="row gy-4 schedule-card p-3 h-100">
+            <p class="schedule-day mb-3"></p>
+            TBA
+          </div>
+          <!-- <div id="schedule-container" class="row gy-4"></div> -->
+        </div>
       </div>
-    </div>
-  </div>
-</section>
 
+      <!-- About Gandhinagar & Tourism -->
+      <section class="container my-5 about-city-section">
+        <div class="shadow-lg p-4 bg-white rounded">
+          <h2>About Gandhinagar & Tourism</h2>
+          <div class="about-city-grid d-md-flex gap-4">
+            <div class="about-city-text">
+              <p>
+                Gandhinagar, the capital city of Gujarat, is known for its
+                greenery, wide roads, and planned layout.
+              </p>
+              <p>Nearby attractions include:</p>
+              <ul>
+                <li>
+                  <strong>Akshardham Temple</strong> – A majestic
+                  spiritual-cultural campus.
+                </li>
+                <li>
+                  <strong>Indroda Nature Park</strong> – Known as India’s
+                  Jurassic Park.
+                </li>
+                <li>
+                  <strong>Sabarmati Riverfront</strong> – A scenic spot in
+                  Ahmedabad.
+                </li>
+                <li>
+                  <strong>Adalaj Stepwell</strong> – A historical marvel of
+                  Indo-Islamic architecture.
+                </li>
+              </ul>
+              <p>
+                Explore local cuisine, handicrafts, and vibrant cultural
+                festivals.
+              </p>
+              <a
+                href="https://www.gujarattourism.com"
+                target="_blank"
+                class="btn btn-primary"
+                >Explore Gujarat Tourism</a
+              >
+            </div>
+            <div class="about-city-image">
+              <img
+                src="./assets/gandhinagar.png"
+                alt="Gandhinagar Tourism"
+                class="img-fluid"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
-
-
-
-
-    </main>
-    <!-- Contact & Location Section -->
-    <div class="container my-5" id="contact-location-section">
+      <!-- Contact & Location -->
+      <div class="container my-5" id="contact-location-section">
         <div class="contact-box">
-            <!-- Google Map -->
-            <div class="map-section">
-                <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10035.502237081195!2d72.634882146719!3d23.190890534346202!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395c2a3c9618d2c5%3A0xc54de484f986b1fa!2sDA-IICT!5e0!3m2!1sen!2sin!4v1749908298624!5m2!1sen!2sin"
-                    width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade">
-                </iframe>
-            </div>
+          <!-- Google Map -->
+          <div class="map-section">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10035.502237081195!2d72.634882146719!3d23.190890534346202!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395c2a3c9618d2c5%3A0xc54de484f986b1fa!2sDA-IICT!5e0!3m2!1sen!2sin!4v1749908298624!5m2!1sen!2sin"
+              width="100%"
+              height="350"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            >
+            </iframe>
+          </div>
 
-            <!-- Contact Details -->
-            <div class="contact-details">
-                <h3>Contact Information</h3>
-                <p><strong>Address:</strong><br> Dhirubhai Ambani University,<br> Gandhinagar, Gujarat - 382007</p>
-                <p><strong>Email:</strong> <a href="mailto:madhukant_sharma@dau.ac.in">ismmacs2025@dau.ac.in</a></p>
-                <p><strong>Contact Person:</strong><br> Dr. MadhuKant Sharma (Convenor / Organizing Secretary)</p>
-            </div>
+          <!-- Contact Details -->
+          <div class="contact-details">
+            <h3>Contact Information</h3>
+            <p>
+              <strong>Address:</strong><br />
+              Dhirubhai Ambani University,<br />
+              Gandhinagar, Gujarat - 382007
+            </p>
+            <p>
+              <strong>Email:</strong>
+              <a href="mailto:madhukant_sharma@dau.ac.in"
+                >ismmacs2025@dau.ac.in</a
+              >
+            </p>
+            <p>
+              <strong>Contact Person:</strong><br />
+              Dr. MadhuKant Sharma (Convenor / Organizing Secretary)
+            </p>
+          </div>
         </div>
-    </div>
-
-    <div class="container my-5">
-        <div
-          id="vibrant-campus"
-          class=" shadow-lg p-4 rounded bg-white"
-        ></div>
       </div>
 
-            <div class="container my-5" id="sponsors-section">
-            <div class="shadow-lg p-3 mb-5 bg-white rounded">
-                <h2 class="text-center mb-4">Sponsors</h2>
-                <div class="committee row " id="sponsors-container">
-                </div>
-            </div>
+      <!-- Sponsors Section -->
+      <section class="container my-5" id="sponsors-section">
+        <div class="shadow-lg p-4 bg-white rounded">
+          <h2 class="text-center mb-4">Sponsors</h2>
+          <div class="committee row" id="sponsors-container"></div>
         </div>
-
+      </section>
+    </main>
 
     <!-- Footer -->
     <footer class="footer-custom">
-        <div class="footer-container">
-            <p>
-                Developed and Managed by
-                <a href="https://portfolio-rahul-tiwari.vercel.app" target="_blank">Rahul Tiwari</a>
-            </p>
-        </div>
+      <div class="footer-container text-center py-3">
+        <p>
+          Developed and Managed by
+          <a href="https://portfolio-rahul-tiwari.vercel.app" target="_blank"
+            >Rahul Tiwari</a
+          >
+        </p>
+      </div>
     </footer>
 
-
-
+    <!-- Scripts -->
     <script src="./script/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script> -->
-
-
     <script src="./script/jquery.js"></script>
     <script src="./script/script.js"></script>
-
-
     <script src="./script/registrationFormScript.js"></script>
-    <!-- <script src="./script/payment.js"></script> -->
-
-</body>
-
+  </body>
 </html>

@@ -41,8 +41,13 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "frontend", "index.html"));
 });
 
-app.post("/paymemtSuccessfull",(req,res)=>{
-  console.log(...req.body)
+
+app.get("/payment-success",(req,res)=>{
+  res.sendFile(path.join(__dirname, "frontend", "payment-success.html"));
+})
+
+app.get("/payment-failure",(req,res)=>{
+    res.sendFile(path.join(__dirname, "frontend", "payment-failure.html"));
 })
 
 // Start server

@@ -1,8 +1,10 @@
 import express from "express";
-import { redirectToPayment } from "../controllers/payment.controller.js";
+import { handlePaymentCallback, initiateRegistrationAndPayment } from "../controllers/payment.controller.js";
 
 const router = express.Router();
 
-router.post("/payment",redirectToPayment)
+router.post("/payment",initiateRegistrationAndPayment)
+router.post("/paymemtSuccessfull", handlePaymentCallback);
+
 
 export default router;

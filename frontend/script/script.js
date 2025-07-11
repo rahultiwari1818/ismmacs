@@ -245,8 +245,22 @@ $(document).ready(function () {
   });
 
   //   --------------------------------------- Registration Notes Data fetch ------------------------------------------------------------
+ let feeData = {};
 
-$.getJSON("./data/registration_fees_and_notes.json", function (data) {
+  $.getJSON("./data/registration_fees_and_notes.json", function (data) {
+    feeData = data["RegistrationFee (Including 18% GST)"];
+
+    // Render tables at top
+    renderDetailedFeeTable("#conferenceTable", feeData["Conference"]);
+    renderDetailedFeeTable("#workshopConfTable", feeData["Conference and Workshop"]);
+
+    if (data.Notes) {
+      data.Notes.forEach((note) => {
+        $("#notesList").append(`<li>${note}</li>`);
+      });
+    }
+  });
+
   function renderDetailedFeeTable(targetId, feeData) {
     let html = "";
 
@@ -254,20 +268,15 @@ $.getJSON("./data/registration_fees_and_notes.json", function (data) {
       html += `<h5 class="mt-4">${nationality}</h5>`;
 
       const membershipGroups = feeData[nationality];
-
       const hasMembershipGroups =
         typeof membershipGroups === "object" &&
         !Array.isArray(membershipGroups) &&
         Object.values(membershipGroups)[0] instanceof Object;
 
-      if (
-        hasMembershipGroups &&
-        Object.keys(membershipGroups)[0] !==
-          "Students (UG/ PG/ Research Scholars)"
-      ) {
+      if (hasMembershipGroups && Object.keys(membershipGroups)[0] !== "Students (UG/ PG/ Research Scholars)") {
         Object.keys(membershipGroups).forEach((membershipType) => {
           html += `<h6 class="mt-2">${membershipType}</h6>`;
-          html += `<div class="table-wrapper"><table class="custom-table"><thead><tr><th>Category</th><th>Fee</th><th>Action</th></tr></thead><tbody>`;
+          html += `<div class="table-wrapper"><table class="custom-table"><thead><tr><th>Category</th><th>Fee</th></tr></thead><tbody>`;
 
           const categoryFees = membershipGroups[membershipType];
           Object.keys(categoryFees).forEach((category) => {
@@ -276,7 +285,6 @@ $.getJSON("./data/registration_fees_and_notes.json", function (data) {
               <tr>
                 <td>${category}</td>
                 <td>${fee}</td>
-                <td><button class="btn btn-success register-btn" data-amount="${fee}">Register</button></td>
               </tr>
             `;
           });
@@ -284,76 +292,130 @@ $.getJSON("./data/registration_fees_and_notes.json", function (data) {
           html += `</tbody></table></div>`;
         });
       } else {
-        html += `<div class="table-wrapper"><table class="custom-table"><thead><tr><th>Category</th><th>Fee</th><th>Action</th></tr></thead><tbody>`;
+        html += `<div class="table-wrapper"><table class="custom-table"><thead><tr><th>Category</th><th>Fee</th></tr></thead><tbody>`;
         Object.keys(membershipGroups).forEach((category) => {
           const fee = membershipGroups[category];
           html += `
             <tr>
               <td>${category}</td>
               <td>${fee}</td>
-              <td><button class="btn btn-success register-btn" data-amount="${fee}">Register</button></td>
             </tr>
           `;
         });
         html += `</tbody></table></div>`;
       }
     });
-
+    // console.log(html)
     $(targetId).html(html);
   }
 
-  renderDetailedFeeTable(
-    "#conferenceTable",
-    data["RegistrationFee (Including 18% GST)"]["Conference"]
-  );
+  // Calculate fee on selection
+  $("#nationality, #membership, #category").change(function () {
+    const nationality = $("#nationality").val();
+    const membership = $("#membership").val();
+    const category = $("#category").val();
 
-  renderDetailedFeeTable(
-    "#workshopConfTable",
-    data["RegistrationFee (Including 18% GST)"]["Conference and Workshop"]
-  );
+    let fee = "";
 
-  // Notes
-  if (data.Notes) {
-    data.Notes.forEach((note) => {
-      $("#notesList").append(`<li>${note}</li>`);
-    });
-  }
+    if (nationality && category) {
+      if (nationality === "Indian Participants" && membership) {
+        try {
+          fee = feeData["Conference"][nationality][membership][category];
+        } catch {
+          fee = "";
+        }
+      } else if (nationality === "Foreign Participants") {
+        try {
+          fee = feeData["Conference"][nationality][category];
+        } catch {
+          fee = "";
+        }
+      }
+    }
 
-  $(".toggle-btn").click(function () {
-    const target = $(this).data("target");
-    $(target).toggleClass("hidden");
+    if (fee) {
+      $("#feeAmount").text("Fee: " + fee);
+    } else {
+      $("#feeAmount").text("");
+    }
   });
 
-  // Register button click handler
-  $(document).on("click", ".register-btn", function () {
-    let amount = $(this).data("amount");
+  // Validate and submit
+  $("#proceedToPay").click(function () {
+    const requiredFields = [
+      "nationality",
+      "category",
+      "firstName",
+      "lastName",
+      "instituteName",
+      "email",
+      "phone",
+      "address"
+    ];
 
-    // Extract numeric INR part (if "150 USD / Rs 11800")
-    if (amount.includes("/")) {
-      amount = amount.split("/")[1].trim();
+    let valid = true;
+
+    requiredFields.forEach((id) => {
+      const val = $("#" + id).val()?.trim();
+      if (!val) {
+        $("#" + id).addClass("error");
+        valid = false;
+      } else {
+        $("#" + id).removeClass("error");
+      }
+    });
+
+    if (!valid) {
+      alert("Please fill all required fields correctly.");
+      return;
     }
-    amount = amount.replace("Rs ", "").replace(",", "").trim();
 
+    // Parse fee
+    let fee = $("#feeAmount").text().replace("Fee: ", "").replace("Rs ", "").split("/")[1]?.trim();
+    if (!fee) {
+      fee = $("#feeAmount").text().replace("Fee: ", "").replace("Rs ", "").trim();
+    }
+    if (fee.includes(" ")) {
+      fee = fee.split(" ")[0];
+    }
+
+    // Prepare payload
+    const payload = {
+      nationality: $("#nationality").val(),
+      membership: $("#membership").val(),
+      category: $("#category").val(),
+      firstName: $("#firstName").val().trim(),
+      lastName: $("#lastName").val().trim(),
+      instituteName: $("#instituteName").val().trim(),
+      email: $("#email").val().trim(),
+      phone: $("#phone").val().trim(),
+      address: $("#address").val().trim(),
+      amount: fee
+    };
+
+    // Call backend payment API
     $.ajax({
       url: "/api/payment/payment",
       type: "POST",
       contentType: "application/json",
-      data: JSON.stringify({ amount }),
+      data: JSON.stringify(payload),
       success: function (response) {
-        // alert(response.link)
         if (response.link) {
           window.location.href = response.link;
         } else {
-          alert("Error: Payment URL not returned.");
+          alert("Error: Payment link not returned.");
         }
       },
       error: function () {
-        alert("Failed to initiate payment.");
-      },
+        alert("Payment initiation failed.");
+      }
     });
   });
-});
 
+   $(".toggle-btn").click(function () {
+    const target = $(this).data("target");
+    $(target).toggleClass("hidden");
+  });
 
   //   --------------------------------------------------- Sponsors Data Fetch -------------------------------------------------------------
 
