@@ -12,7 +12,7 @@ export const initiateRegistrationAndPayment = async (req, res) => {
       email,
       phone,
       nationality,
-      membership,
+      membershipType,
       category,
       address,
       amount,
@@ -24,12 +24,13 @@ export const initiateRegistrationAndPayment = async (req, res) => {
 
     let membershipReceiptPath = null;
 
-    if (membership === "New ISMMACS Member") {
+    if (membershipType === "New ISMMACS Member") {
       if (!req.file) {
         return res.status(400).json({ message: "Membership receipt is required for New ISMMACS Member." });
       }
       membershipReceiptPath = req.file.path;
     }
+
 
     const referenceNo = generateReferenceNo();
 
@@ -40,7 +41,7 @@ export const initiateRegistrationAndPayment = async (req, res) => {
       email,
       phone,
       nationality,
-      membership,
+      membership:membershipType,
       category,
       address,
       amount,

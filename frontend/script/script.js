@@ -413,6 +413,7 @@ $(document).ready(function () {
       !email ||
       !phone ||
       !institute
+
     ) {
       showCustomDialog("Validation Error", "Please fill all required fields.");
       return;
