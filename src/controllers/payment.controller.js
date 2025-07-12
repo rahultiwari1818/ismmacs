@@ -8,7 +8,7 @@ export const initiateRegistrationAndPayment = async (req, res) => {
     const {
       firstName,
       lastName,
-      instituteName,
+      institute,
       email,
       phone,
       nationality,
@@ -36,7 +36,7 @@ export const initiateRegistrationAndPayment = async (req, res) => {
     const newReg = await Registration.create({
       firstName,
       lastName,
-      instituteName,
+      instituteName:institute,
       email,
       phone,
       nationality,

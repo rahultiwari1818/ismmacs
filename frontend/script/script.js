@@ -368,8 +368,16 @@ $(document).ready(function () {
     const nationalityData = feeData[feeKey][nationality];
 
     if (nationality === "Indian Participants") {
-      if (!membership || !nationalityData[membership]) return null;
-      let amount = nationalityData[membership][category];
+      // Treat "New ISMMACS Member" same as "ISMMACS Member"
+      let effectiveMembership = membership;
+      if (membership === "New ISMMACS Member") {
+        effectiveMembership = "ISMMACS Member";
+      }
+
+      if (!effectiveMembership || !nationalityData[effectiveMembership])
+        return null;
+
+      let amount = nationalityData[effectiveMembership][category];
       return cleanAmount(amount);
     } else {
       let amount = nationalityData[category];
@@ -455,15 +463,17 @@ $(document).ready(function () {
       formData.append("membershipReceipt", membershipFile);
     }
 
+    formData.append("membership", membership);
+
     $.ajax({
-      url: "/api/registration/register",
+      url: "/api/payment/payment",
       type: "POST",
       data: formData,
       processData: false,
       contentType: false,
       success: function (response) {
-        if (response.link) {
-          window.location.href = response.link;
+        if (response.paymentLink) {
+          window.location.href = response.paymentLink;
         } else {
           showCustomDialog(
             "Info",
@@ -612,9 +622,6 @@ $(document).ready(function () {
 
   // Add co-author
   $("#addCoauthor").click(function () {
-
-    
-
     const newField = `
     <div class="input-group mb-2">
       <input type="text" name="coauthorNames[]" class="form-control" placeholder="Co-author name" />
