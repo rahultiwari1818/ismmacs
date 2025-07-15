@@ -182,7 +182,7 @@
     },
     {
       "name": "Bapan Ghosh",
-      "affiliation": "IIT Indore",
+      "affiliation": "Associate Professor,IIT Indore",
       "researchInterInterests": [
         "Dynamical System",
         "Discrete Models Applied in Population Dynamics",
@@ -190,7 +190,7 @@
       ],
       "image": "./assets/speakers_images/Prof. Bapan Ghosh.jpg",
       "link": "https://iiti.irins.org/profile/113211",
-      "speakerType": "Tentative"
+      "speakerType": "Confirmed"
     },
     {
       "name": "G D V Gowda",
@@ -269,7 +269,7 @@
       ],
       "image": "./assets/speakers_images/Dr Anuradha Jha.jpg",
       "link": "https://www.iiitg.ac.in/science-and-mathemetics/anuradha-jha",
-      "speakerType": "Tentative"
+      "speakerType": "Confirmed"
     },
 
     {
@@ -378,7 +378,7 @@
     },
     {
       "name": "Muslim Malik",
-      "affiliation": "Associate Professor, IIT Mandi",
+      "affiliation": "Professor, IIT Mandi",
       "researchInterests": [
         "Controllability of Differential Equations",
         "Inverse Problems in Fluid Dynamics",
@@ -437,7 +437,7 @@
 
     {
       "name": "Manil T Mohan",
-      "affiliation": "IIT Roorkee",
+      "affiliation": "Assistant Professor, IIT Roorkee",
       "researchInterInterests": [
         "Stochastic Differential Equations",
         "Large Deviation Theory",
@@ -448,12 +448,12 @@
       ],
       "image": "./assets/speakers_images/Dr Manil T Mohan.jpg",
       "link": "https://www.iitr.ac.in/~MA/Manil_T__Mohan",
-      "speakerType": "Tentative"
+      "speakerType": "Confirmed"
     },
 
     {
       "name": "Anushaya Mohapatra",
-      "affiliation": "BITS Pilani Goa",
+      "affiliation": "Assistant Professor , BITS Pilani Goa",
       "researchInterInterests": ["Dynamical Systems", "Mathematical Biology"],
       "image": "./assets/speakers_images/Dr. Anushaya Mohapatra.webp",
       "link": "https://www.bits-pilani.ac.in/goa/anushaya-chittaranjan-mohapatra/",
@@ -461,14 +461,14 @@
     },
      {
     "name": "Anuj Mubayi",
-    "affiliation": "Distinguished IBA Fellow",
+    "affiliation": "Distinguished IBA Fellow , USA",
     "image": "./assets/speakers_images/Anuj Mubayi.jpg",
     "link": "https://www.anujmubayi.com/",
-    "speakerType":"Tentative"
+    "speakerType":"Confirmed"
   },
     {
     "name": "Anima Nagar",
-    "affiliation": "Professor, Department of Mathematics, IIT Delhi",
+    "affiliation": "Associate Professor, Department of Mathematics, IIT Delhi",
     "image": "./assets/speakers_images/Anima Nagar.jpg",
     "link": "https://maths.iitd.ac.in/profile/130",
     "speakerType":"Confirmed"
@@ -511,7 +511,7 @@
       ],
       "image": "./assets/speakers_images/Dr. C S Nishad.jpeg",
       "link": "https://www.iiitnr.ac.in/content/chandra-shekhar-nishad",
-      "speakerType": "Tentative"
+      "speakerType": "Confirmed"
     },
     {
       "name": "Rajesh K Pandey",
@@ -577,7 +577,7 @@
 
     {
       "name": "Pratima Rai",
-      "affiliation": "Assistant Professor, Delhi University",
+      "affiliation": "Associate Professor, Delhi University",
       "researchInterests": [
         "Numerical analysis",
         "Singular perturbation problems",
@@ -585,7 +585,7 @@
       ],
       "image": "./assets/speakers_images/Dr Pratima Rai.jpeg",
       "link": "https://people.samarth.edu.in/index.php/profile/user/index/DU/ngr",
-      "speakerType": "Tentative"
+      "speakerType": "Confirmed"
     },
 
     {
@@ -750,7 +750,7 @@
     },
     {
       "name": "Nikhil Srivastava",
-      "affiliation": "NIT Mizoram",
+      "affiliation": "Assistant Professor ,  NIT Mizoram",
       "researchInterInterests": [
         "Numerical Methods for Fractional PDEs",
         "Numerical Approximations of Fractional Derivatives",
@@ -759,7 +759,7 @@
       ],
       "image": "./assets/speakers_images/Dr. Nikhil Srivastava.jpeg",
       "link": "https://www.nitmz.ac.in/Department_FacultyProfile.aspx?nDeptID=eaaiie",
-      "speakerType": "Tentative"
+      "speakerType": "Confirmed"
     },
     {
       "name": "Sudhakar",
@@ -798,7 +798,7 @@
     },
     {
       "name": "Mukesh Tiwari",
-      "affiliation": "DAIICT",
+      "affiliation": "Associate Professor , DAIICT",
       "researchInterInterests": [
         "Nonequilibrium statistical mechanics",
         "Nonlinear dynamics"
@@ -863,7 +863,7 @@
     },
     {
       "name": "V. Vijayakumar",
-      "affiliation": "VIT Vellore",
+      "affiliation": "Assistant Professor ,  VIT Vellore",
       "researchInterInterests": [
         "Differential Equations",
         "Fractional Systems",
