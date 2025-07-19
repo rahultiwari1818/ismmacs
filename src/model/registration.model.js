@@ -19,6 +19,8 @@ const RegistrationSchema = new mongoose.Schema(
     },
     paymentReference: { type: String },
     membershipReceiptPath: { type: String }, // New field
+    foreignTransactionId :{ type : String},
+    foreignPaymentProof :{type:String}
   },
   { timestamps: true }
 );

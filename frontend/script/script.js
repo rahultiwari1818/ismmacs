@@ -328,6 +328,16 @@ $(document).ready(function () {
   });
 
   $("#nationality").change(function () {
+    const nationality = $(this).val();
+
+    if (nationality === "Foreign Participants") {
+      $("#currencyGroup").removeClass("d-none");
+    } else {
+      $("#currencyGroup").addClass("d-none");
+      $("#foreignTxnIdGroup").addClass("d-none");
+      $("#foreignPaymentProofGroup").addClass("d-none");
+    }
+
     if ($(this).val() === "Indian Participants") {
       $("#membership").prop("disabled", false);
     } else {
@@ -335,6 +345,17 @@ $(document).ready(function () {
       $("#membership").prop("disabled", true);
     }
     $("#feeAmount").text("");
+  });
+
+  $("#currency").on("change", function () {
+    const currency = $(this).val();
+    if (currency === "INR") {
+      $("#foreignTxnIdGroup").addClass("d-none");
+      $("#foreignPaymentProofGroup").addClass("d-none");
+    } else {
+      $("#foreignTxnIdGroup").removeClass("d-none");
+      $("#foreignPaymentProofGroup").removeClass("d-none");
+    }
   });
 
   $("#programType, #membership, #category").change(function () {
@@ -398,12 +419,16 @@ $(document).ready(function () {
     const programType = $("#programType").val();
     const membership = $("#membership").val();
     const category = $("#category").val();
+    const currency = $("#currency").val();
     const firstName = $("#firstName").val().trim();
     const lastName = $("#lastName").val().trim();
     const email = $("#email").val().trim();
     const phone = $("#phone").val().trim();
     const institute = $("#institute").val().trim();
+    const txnId = $("#foreignTxnId").val().trim();
+    const paymentProof = $("#foreignPaymentProof")[0]?.files[0];
 
+    // Basic validation
     if (
       !nationality ||
       !programType ||
@@ -413,17 +438,18 @@ $(document).ready(function () {
       !email ||
       !phone ||
       !institute
-
     ) {
       showCustomDialog("Validation Error", "Please fill all required fields.");
       return;
     }
 
+    // Membership for Indian
     if (nationality === "Indian Participants" && !membership) {
       showCustomDialog("Validation Error", "Please select Membership Type.");
       return;
     }
 
+    // Membership receipt check
     if (membership === "New ISMMACS Member") {
       const membershipFile = $("#membershipReceipt")[0].files[0];
       if (!membershipFile) {
@@ -432,6 +458,29 @@ $(document).ready(function () {
           "Please upload your ISMMACS membership receipt."
         );
         return;
+      }
+    }
+
+    // Currency-based validation for Foreign Participants
+    if (nationality === "Foreign Participants") {
+      if (!currency) {
+        showCustomDialog("Validation Error", "Please select payment currency.");
+        return;
+      }
+
+      if (currency !== "INR") {
+        if (!txnId) {
+          showCustomDialog("Validation Error", "Please enter Transaction ID.");
+          return;
+        }
+
+        if (!paymentProof) {
+          showCustomDialog(
+            "Validation Error",
+            "Please upload payment screenshot."
+          );
+          return;
+        }
       }
     }
 
@@ -444,6 +493,7 @@ $(document).ready(function () {
       return;
     }
 
+    // Prepare form data
     const formData = new FormData();
     formData.append("nationality", nationality);
     formData.append("programType", programType);
@@ -458,35 +508,67 @@ $(document).ready(function () {
     formData.append("phone", phone);
     formData.append("institute", institute);
     formData.append("amount", amount);
-
-    if (membership === "New ISMMACS Member") {
-      const membershipFile = $("#membershipReceipt")[0].files[0];
-      formData.append("membershipReceipt", membershipFile);
-    }
-
     formData.append("membership", membership);
 
-    $.ajax({
-      url: "/api/payment/payment",
-      type: "POST",
-      data: formData,
-      processData: false,
-      contentType: false,
-      success: function (response) {
-        if (response.paymentLink) {
-          window.location.href = response.paymentLink;
-        } else {
-          showCustomDialog(
-            "Info",
-            "Registration saved, but payment link not returned."
-          );
-        }
-      },
-      error: function (xhr) {
-        console.error(xhr);
-        showCustomDialog("Error", "Failed to register. Please try again.");
-      },
-    });
+    // Optional fields
+    if (membership === "New ISMMACS Member") {
+      formData.append("membershipReceipt", $("#membershipReceipt")[0].files[0]);
+    }
+
+    if (nationality === "Foreign Participants") {
+      formData.append("currency", currency);
+      if (currency !== "INR") {
+        formData.append("foreignTxnId", txnId);
+        formData.append("foreignPaymentProof", paymentProof);
+      }
+    }
+
+    if (
+      (nationality === "Foreign Participants" && currency == "INR") ||
+      nationality === "Indian Participants"
+    ) {
+      // AJAX Submit
+      $.ajax({
+        url: "/api/payment/payment",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+          if (response.paymentLink) {
+            window.location.href = response.paymentLink;
+          } else {
+            showCustomDialog(
+              "Info",
+              "Registration saved, but payment link not returned."
+            );
+          }
+        },
+        error: function (xhr) {
+          console.error(xhr);
+          showCustomDialog("Error", "Failed to register. Please try again.");
+        },
+      });
+    } else {
+      // AJAX Submit
+      $.ajax({
+        url: "/api/payment/register",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+          
+            window.location.href = "./registeredSuccessfully.html"
+          
+        },
+        error: function (xhr) {
+          console.error(xhr);
+          showCustomDialog("Error", "Failed to register. Please try again.");
+        },
+      });
+
+    }
   });
 
   $(".toggle-btn").click(function () {

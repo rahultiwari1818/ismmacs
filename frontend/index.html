@@ -216,6 +216,7 @@
               </select>
             </div>
 
+
             <div class="form-group">
               <label for="programType">Program Type</label>
               <select id="programType" class="form-control" required>
@@ -239,7 +240,7 @@
 
             <div class="form-group d-none" id="membershipReceiptGroup">
               <label for="membershipReceipt"
-                >Upload ISMMACS Membership Receipt (PDF/IMG)</label
+                >Upload ISMMACS Membership Receipt (Image)</label
               >
               <input
                 type="file"
@@ -265,6 +266,39 @@
             </div>
 
             <p id="feeAmount" class="text-primary fw-bold"></p>
+
+                        <div class="form-group d-none" id="currencyGroup">
+              <label for="currency">Currency of Payment</label>
+              <select id="currency" class="form-control">
+                <option value="">Select</option>
+                <option value="INR">INR</option>
+                <option value="USD">USD</option>
+              </select>
+            </div>
+
+            <div class="form-group d-none" id="foreignTxnIdGroup">
+              <label for="foreignTxnId">Foreign Transaction ID</label>
+              <input
+                type="text"
+                id="foreignTxnId"
+                name="foreignTxnId"
+                class="form-control"
+              />
+            </div>
+
+            <div class="form-group d-none" id="foreignPaymentProofGroup">
+              <label for="foreignPaymentProof"
+                >Upload Payment Screenshot (Image)</label
+              >
+              <input
+                type="file"
+                id="foreignPaymentProof"
+                name="foreignPaymentProof"
+                class="form-control"
+                accept="image/*"
+              />
+            </div>
+
 
             <div class="form-group">
               <label>First Name</label>

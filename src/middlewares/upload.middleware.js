@@ -2,14 +2,28 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-const uploadDir = "uploads/";
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-}
+const abstractDir = "uploads/abstracts/";
+const paymentProofDir = "uploads/proofs/";
 
-const storage = multer.diskStorage({
+
+
+const abstractStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, uploadDir);
+
+    cb(null, abstractDir);
+  },
+  filename: (req, file, cb) => {
+    // Assuming `fullName` is sent in body
+    let fullName = req.body.fullName || req.body.firstName ||"user";
+    // Remove spaces and special characters for filename safety
+    fullName = fullName.replace(/[^a-zA-Z0-9]/g, "_");
+    const timestamp = Date.now();
+    cb(null, `${fullName}-${timestamp}${path.extname(file.originalname)}`);
+  }
+});
+const proofStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, paymentProofDir);
   },
   filename: (req, file, cb) => {
     // Assuming `fullName` is sent in body
@@ -43,13 +57,13 @@ const imageFilter = (req, file, cb) => {
 };
 
 export const imageUpload = multer({
-  storage,
+  storage:proofStorage,
   limits:{fileSize:40*1024*1024},
   imageFilter
 })
 
 const upload = multer({
-  storage,
+  storage:abstractStorage,
   limits: { fileSize: 40 * 1024 * 1024 },
   fileFilter
 });

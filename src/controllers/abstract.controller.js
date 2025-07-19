@@ -22,6 +22,7 @@ export const submitAbstract = async (req, res) => {
     // Save file path
     const filePath = req.file ? req.file.path : null;
 
+
     const newAbstract = new Abstract({
       fullName,
       title,
@@ -53,7 +54,7 @@ export const getAllAbstracts = async (req, res) => {
 
 
 export const downloadAllAbstractsZip = (req, res) => {
-  const abstractsDir = path.join("uploads"); // Update if needed
+  const abstractsDir = path.join("uploads","abstracts"); // Update if needed
   const archive = archiver("zip", { zlib: { level: 9 } });
 
   res.attachment("abstracts.zip");

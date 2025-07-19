@@ -1,8 +1,6 @@
 import { encrypt, generateReferenceNo } from "../utils/utils.js";
 import Registration from "../model/registration.model.js";
 
-
-
 export const initiateRegistrationAndPayment = async (req, res) => {
   try {
     const {
@@ -19,29 +17,34 @@ export const initiateRegistrationAndPayment = async (req, res) => {
     } = req.body;
 
     if (!firstName || !lastName || !email || !phone || !category || !amount) {
-      return res.status(400).json({ message: "All required fields must be filled." });
+      return res
+        .status(400)
+        .json({ message: "All required fields must be filled." });
     }
 
     let membershipReceiptPath = null;
 
     if (membershipType === "New ISMMACS Member") {
       if (!req.file) {
-        return res.status(400).json({ message: "Membership receipt is required for New ISMMACS Member." });
+        return res
+          .status(400)
+          .json({
+            message: "Membership receipt is required for New ISMMACS Member.",
+          });
       }
       membershipReceiptPath = req.file.path;
     }
-
 
     const referenceNo = generateReferenceNo();
 
     const newReg = await Registration.create({
       firstName,
       lastName,
-      instituteName:institute,
+      instituteName: institute,
       email,
       phone,
       nationality,
-      membership:membershipType,
+      membership: membershipType,
       category,
       address,
       amount,
@@ -70,7 +73,9 @@ export const initiateRegistrationAndPayment = async (req, res) => {
       `&returnurl=${encodeURIComponent(encryptedReturnUrl)}` +
       `&Reference%20No=${encodeURIComponent(encryptedReferenceNo)}` +
       `&submerchantid=${encodeURIComponent(encryptedSubmerchantid)}` +
-      `&transaction%20amount=${encodeURIComponent(encryptedTransactionAmount)}` +
+      `&transaction%20amount=${encodeURIComponent(
+        encryptedTransactionAmount
+      )}` +
       `&paymode=${encodeURIComponent(encryptedPaymode)}`;
 
     return res.status(200).json({
@@ -84,9 +89,6 @@ export const initiateRegistrationAndPayment = async (req, res) => {
   }
 };
 
-
-
-
 export const handlePaymentCallback = async (req, res) => {
   try {
     const {
@@ -94,11 +96,13 @@ export const handlePaymentCallback = async (req, res) => {
       "Transaction Amount": transactionAmount,
       "Payment Mode": paymentMode,
       "Transaction Date": transactionDate,
-      "Response Code": responseCode
+      "Response Code": responseCode,
     } = req.body;
 
     // Find registration by ReferenceNo
-    const registration = await Registration.findOne({ paymentReference: ReferenceNo });
+    const registration = await Registration.findOne({
+      paymentReference: ReferenceNo,
+    });
 
     if (!registration) {
       return res.status(404).send("Registration not found.");
@@ -117,14 +121,76 @@ export const handlePaymentCallback = async (req, res) => {
 
     // Redirect to success or failure page
     if (responseCode === "E000") {
-      const successUrl = `/payment-success?referenceNo=${ReferenceNo}&name=${encodeURIComponent(registration.firstName + " " + registration.lastName)}&amount=${transactionAmount}&email=${encodeURIComponent(registration.email)}`;
+      const successUrl = `/payment-success?referenceNo=${ReferenceNo}&name=${encodeURIComponent(
+        registration.firstName + " " + registration.lastName
+      )}&amount=${transactionAmount}&email=${encodeURIComponent(
+        registration.email
+      )}`;
       return res.redirect(successUrl);
     } else {
       return res.redirect("/payment-failure");
     }
-
   } catch (error) {
     console.error("Payment callback error: ", error);
     res.status(500).send("Internal Server Error");
+  }
+};
+
+export const registerForeignParticipants = async (req, res) => {
+  try {
+    const {
+      firstName,
+      lastName,
+      institute,
+      email,
+      phone,
+      nationality,
+      membershipType,
+      category,
+      address,
+      amount,
+      foreignTxnId,
+
+    } = req.body;
+
+    if (!firstName || !lastName || !email || !phone || !category || !amount) {
+      return res
+        .status(400)
+        .json({ message: "All required fields must be filled." });
+    }
+
+    let paymentProofPath = null;
+
+    if (!req.file) {
+      return res.status(400).json({ message: "Payment Proof is required!" });
+    }
+    paymentProofPath = req.file.path;
+
+
+    const referenceNo = generateReferenceNo();
+
+    const newReg = await Registration.create({
+      firstName,
+      lastName,
+      instituteName: institute,
+      email,
+      phone,
+      nationality,
+      membership: membershipType,
+      category,
+      address,
+      amount,
+      foreignPaymentProof:paymentProofPath,
+      foreignTransactionId:foreignTxnId,
+      paymentStatus: "Pending",
+      paymentReference: referenceNo,
+    });
+
+    return res.status(200).json({
+      message: "Registered Successfully",
+    });
+  } catch (error) {
+    console.error("Error initiating registration/payment:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
